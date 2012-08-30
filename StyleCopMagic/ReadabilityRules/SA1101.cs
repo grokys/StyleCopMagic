@@ -104,7 +104,7 @@ namespace StyleCopMagic
 
                     result &= symbol.ContainingType == parentClassSymbol &&
                               ((field != null && !field.IsStatic) ||
-                               (method != null && !method.IsStatic) ||
+                               (method != null && !method.IsStatic && method.MethodKind != MethodKind.Constructor) ||
                                (property != null && !property.IsStatic) ||
                                (@event != null && !@event.IsStatic));
                 }

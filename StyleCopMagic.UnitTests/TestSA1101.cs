@@ -85,6 +85,12 @@ namespace StyleCopMagic.UnitTests
             Run("ThrowException");
         }
 
+        [TestMethod]
+        public void CreateSelf()
+        {
+            Run("CreateSelf");
+        }
+
         private void Run(string test)
         {
             var src = Load("SA1101", test);
