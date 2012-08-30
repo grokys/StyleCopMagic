@@ -13,19 +13,19 @@ namespace StyleCopMagic.UnitTests
     {
         const string TestFilePath = @"..\..\..\TestFiles";
 
-        //[TestMethod]
+        [TestMethod]
         public void FieldWrite()
         {
             Run("FieldWrite");
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void FieldRead()
         {
             Run("FieldRead");
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void FieldMemberAccess()
         {
             Run("FieldMemberAccess");
@@ -35,6 +35,42 @@ namespace StyleCopMagic.UnitTests
         public void FieldStaticRead()
         {
             Run("FieldStaticRead");
+        }
+
+        [TestMethod]
+        public void PropertyWrite()
+        {
+            Run("PropertyWrite");
+        }
+
+        [TestMethod]
+        public void PropertyRead()
+        {
+            Run("PropertyRead");
+        }
+
+        [TestMethod]
+        public void MethodCall()
+        {
+            Run("MethodCall");
+        }
+
+        [TestMethod]
+        public void EventRead()
+        {
+            Run("EventRead");
+        }
+
+        [TestMethod]
+        public void EventCall()
+        {
+            Run("EventCall");
+        }
+
+        [TestMethod]
+        public void AmbiguousOverloadedMethodCall()
+        {
+            Run("AmbiguousOverloadedMethodCall");
         }
 
         private void Run(string test)

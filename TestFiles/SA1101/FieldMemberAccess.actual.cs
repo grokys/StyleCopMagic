@@ -9,6 +9,6 @@ public class FieldWrite
 
     public FieldWrite()
     {
-        inner.field1 = 1;
+        this.inner.field1 = 1;
     }
 }

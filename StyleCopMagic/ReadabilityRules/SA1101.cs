@@ -11,6 +11,7 @@ namespace StyleCopMagic
     using System.Linq;
     using System.Text;
     using Roslyn.Compilers.CSharp;
+    using Roslyn.Compilers;
 
     public class SA1101 : SyntaxRewriter
     {
@@ -40,38 +41,68 @@ namespace StyleCopMagic
         {
             SymbolInfo symbolInfo = this.semanticModel.GetSymbolInfo(node);
             
-            if (symbolInfo.Symbol != null)
+            if (IsMember(symbolInfo))
             {
-                FieldSymbol field = symbolInfo.Symbol.OriginalDefinition as FieldSymbol;
-                
-                if (field != null && !field.IsStatic)
-                {
-                    MemberAccessExpressionSyntax parent = node.Parent as MemberAccessExpressionSyntax;
+                MemberAccessExpressionSyntax parent = node.Parent as MemberAccessExpressionSyntax;
                     
-                    // If the parent expression isn't a member access expression then we need to
-                    // add a 'this.'.
-                    bool rewrite = parent == null;
+                // If the parent expression isn't a member access expression then we need to
+                // add a 'this.'.
+                bool rewrite = parent == null;
 
-                    // If the parent expression is a member access expression, but the identifier is
-                    // on the left, then we need to add a 'this.'.
-                    if (!rewrite)
-                    {
-                        rewrite = parent.ChildNodes().First() == node;
-                    }
+                // If the parent expression is a member access expression, but the identifier is
+                // on the left, then we need to add a 'this.'.
+                if (!rewrite)
+                {
+                    rewrite = parent.ChildNodes().First() == node;
+                }
 
-                    if (rewrite)
-                    {
-                        return Syntax.MemberAccessExpression(
-                            SyntaxKind.MemberAccessExpression,
-                            Syntax.ThisExpression(),
-                            Syntax.IdentifierName(node.Identifier.ValueText))
-                                .WithLeadingTrivia(node.GetLeadingTrivia())
-                                .WithTrailingTrivia(node.GetTrailingTrivia());
-                    }
+                if (rewrite)
+                {
+                    return Syntax.MemberAccessExpression(
+                        SyntaxKind.MemberAccessExpression,
+                        Syntax.ThisExpression(),
+                        Syntax.IdentifierName(node.Identifier.ValueText))
+                            .WithLeadingTrivia(node.GetLeadingTrivia())
+                            .WithTrailingTrivia(node.GetTrailingTrivia());
                 }
             }
 
             return base.VisitIdentifierName(node);
+        }
+
+        bool IsMember(SymbolInfo symbolInfo)
+        {
+            IEnumerable<Symbol> symbols;
+
+            if (symbolInfo.Symbol != null)
+            {
+                symbols = new[] { symbolInfo.Symbol };
+            }
+            else if (symbolInfo.CandidateReason == CandidateReason.OverloadResolutionFailure)
+            {
+                symbols = symbolInfo.CandidateSymbols.ToArray();
+            }
+            else
+            {
+                return false;
+            }
+
+            bool result = true;
+
+            foreach (Symbol symbol in symbols)
+            {
+                FieldSymbol field = symbol.OriginalDefinition as FieldSymbol;
+                MethodSymbol method = symbol.OriginalDefinition as MethodSymbol;
+                PropertySymbol property = symbol.OriginalDefinition as PropertySymbol;
+                EventSymbol @event = symbol.OriginalDefinition as EventSymbol;
+
+                result &= (field != null && !field.IsStatic) ||
+                          (method != null && !method.IsStatic) ||
+                          (property != null && !property.IsStatic) ||
+                          (@event != null && !@event.IsStatic);
+            }
+
+            return result;
         }
     }
 }

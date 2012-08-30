@@ -58,10 +58,17 @@ namespace StyleCopMagicCmd
 
         private static void ProcessFile(string fileName)
         {
-            SyntaxTree src = SyntaxTree.ParseCompilationUnit(File.ReadAllText(fileName));
-            SA1101 s = new SA1101(src);
-            src = s.Repair();
-            File.WriteAllText(fileName, src.GetText().GetText());
+            try
+            {
+                SyntaxTree src = SyntaxTree.ParseCompilationUnit(File.ReadAllText(fileName));
+                SA1101 s = new SA1101(src);
+                src = s.Repair();
+                File.WriteAllText(fileName, src.GetText().GetText());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
