@@ -39,9 +39,7 @@ namespace StyleCopMagic
 
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
         {
-            SymbolInfo symbolInfo = this.semanticModel.GetSymbolInfo(node);
-            
-            if (IsMember(symbolInfo))
+            if (IsMember(node))
             {
                 MemberAccessExpressionSyntax parent = node.Parent as MemberAccessExpressionSyntax;
                     
@@ -70,36 +68,47 @@ namespace StyleCopMagic
             return base.VisitIdentifierName(node);
         }
 
-        bool IsMember(SymbolInfo symbolInfo)
+        bool IsMember(IdentifierNameSyntax identifier)
         {
-            IEnumerable<Symbol> symbols;
+            ClassDeclarationSyntax parentClass = identifier.FirstAncestorOrSelf<ClassDeclarationSyntax>();
+            bool result = false;
 
-            if (symbolInfo.Symbol != null)
+            if (parentClass != null)
             {
-                symbols = new[] { symbolInfo.Symbol };
-            }
-            else if (symbolInfo.CandidateReason == CandidateReason.OverloadResolutionFailure)
-            {
-                symbols = symbolInfo.CandidateSymbols.ToArray();
-            }
-            else
-            {
-                return false;
-            }
+                NamedTypeSymbol parentClassSymbol = this.semanticModel.GetDeclaredSymbol(parentClass);
+                SymbolInfo identifierSymbol = this.semanticModel.GetSymbolInfo(identifier);
 
-            bool result = true;
+                IEnumerable<Symbol> symbols;
 
-            foreach (Symbol symbol in symbols)
-            {
-                FieldSymbol field = symbol.OriginalDefinition as FieldSymbol;
-                MethodSymbol method = symbol.OriginalDefinition as MethodSymbol;
-                PropertySymbol property = symbol.OriginalDefinition as PropertySymbol;
-                EventSymbol @event = symbol.OriginalDefinition as EventSymbol;
+                if (identifierSymbol.Symbol != null)
+                {
+                    symbols = new[] { identifierSymbol.Symbol };
+                }
+                else if (identifierSymbol.CandidateReason == CandidateReason.OverloadResolutionFailure)
+                {
+                    symbols = identifierSymbol.CandidateSymbols.ToArray();
+                }
+                else
+                {
+                    return false;
+                }
 
-                result &= (field != null && !field.IsStatic) ||
-                          (method != null && !method.IsStatic) ||
-                          (property != null && !property.IsStatic) ||
-                          (@event != null && !@event.IsStatic);
+                result = true;
+
+                foreach (Symbol symbol in symbols)
+                {
+                    FieldSymbol field = symbol.OriginalDefinition as FieldSymbol;
+                    MethodSymbol method = symbol.OriginalDefinition as MethodSymbol;
+                    PropertySymbol property = symbol.OriginalDefinition as PropertySymbol;
+                    EventSymbol @event = symbol.OriginalDefinition as EventSymbol;
+
+                    result &= symbol.ContainingType == parentClassSymbol &&
+                              ((field != null && !field.IsStatic) ||
+                               (method != null && !method.IsStatic) ||
+                               (property != null && !property.IsStatic) ||
+                               (@event != null && !@event.IsStatic));
+                }
+
             }
 
             return result;

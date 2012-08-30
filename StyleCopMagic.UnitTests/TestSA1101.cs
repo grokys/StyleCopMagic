@@ -73,6 +73,18 @@ namespace StyleCopMagic.UnitTests
             Run("AmbiguousOverloadedMethodCall");
         }
 
+        //[TestMethod]
+        public void UsingCrash()
+        {
+            Run("UsingCrash");
+        }
+
+        [TestMethod]
+        public void ThrowException()
+        {
+            Run("ThrowException");
+        }
+
         private void Run(string test)
         {
             var src = Load("SA1101", test);
