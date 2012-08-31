@@ -1,74 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using Roslyn.Compilers.CSharp;
-using StyleCopMagic;
-
-namespace StyleCopMagicCmd
+﻿namespace StyleCopMagicCmd
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.IO;
+    using Roslyn.Compilers.CSharp;
+    using Roslyn.Services;
+    using StyleCopMagic;
+    using Roslyn.Compilers;
+
     class Program
     {
         static void Main(string[] args)
         {
-            foreach (string arg in args)
+            IWorkspace workspace = null;
+
+            if (args.Length == 0)
             {
-                string path = Path.GetDirectoryName(arg);
-                string searchPattern = Path.GetFileName(arg);
-                bool recursive = false;
+                Console.WriteLine("Usage: StyleCopMagicCmd ProjectFile");
+            }
+            if (Path.GetExtension(args[0]) == ".sln")
+            {
+                workspace = Workspace.LoadSolution(args[0]);
+            }
+            else if (Path.GetExtension(args[0]) == ".csproj")
+            {
+                workspace = Workspace.LoadStandAloneProject(args[0]);
+            }
+            else
+            {
+                Console.WriteLine("Unexpected project file extension. Expected .sln or .csproj.");
+            }
 
-                if (string.IsNullOrWhiteSpace(path))
-                {
-                    path = Directory.GetCurrentDirectory();
-                }
-
-                if (Directory.Exists(Path.Combine(path, searchPattern)))
-                {
-                    path = Path.Combine(path, searchPattern);
-                    searchPattern = "*.cs";
-                    recursive = true;
-                }
-
-                ProcessDirectory(path, searchPattern, recursive);
+            if (workspace != null)
+            {
+                Process(workspace);
             }
         }
 
-        static void ProcessDirectory(string path, string searchPattern, bool recursive)
+        private static void Process(IWorkspace workspace)
         {
-            foreach (string fileName in Directory.EnumerateFiles(path, searchPattern))
-            {
-                Console.WriteLine(fileName);
-                ProcessFile(fileName);
-            }
+            ISolution solution = workspace.CurrentSolution;
+            ISolution newSolution = solution;
 
-            if (recursive)
+            foreach (IProject project in solution.Projects)
             {
-                foreach (string childPath in Directory.EnumerateDirectories(path))
+                foreach (DocumentId documentId in project.DocumentIds)
                 {
-                    string directoryName = Path.GetFileName(childPath);
+                    IDocument document = newSolution.GetDocument(documentId);
 
-                    if (directoryName != "obj" && directoryName != "bin")
+                    if (document.LanguageServices.Language == LanguageNames.CSharp)
                     {
-                        ProcessDirectory(childPath, searchPattern, true);
+                        Console.WriteLine(document.Name);
+
+                        try
+                        {
+                            SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
+                            SA1101 rule = new SA1101(tree);
+                            SyntaxTree newTree = rule.Repair();
+                            IDocument newDocument = document.UpdateSyntaxRoot(newTree.GetRoot());
+                            newSolution = newDocument.Project.Solution;
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
                     }
                 }
             }
-        }
 
-        private static void ProcessFile(string fileName)
-        {
-            try
-            {
-                SyntaxTree src = SyntaxTree.ParseCompilationUnit(File.ReadAllText(fileName));
-                SA1101 s = new SA1101(src);
-                src = s.Repair();
-                File.WriteAllText(fileName, src.GetText().GetText());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            workspace.ApplyChanges(solution, newSolution);
         }
     }
 }

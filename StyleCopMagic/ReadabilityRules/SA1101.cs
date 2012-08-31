@@ -108,7 +108,6 @@ namespace StyleCopMagic
                                (property != null && !property.IsStatic) ||
                                (@event != null && !@event.IsStatic));
                 }
-
             }
 
             return result;
