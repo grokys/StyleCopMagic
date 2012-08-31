@@ -103,6 +103,12 @@ namespace StyleCopMagic.UnitTests
             Run("ObjectInitializer");
         }
 
+        [TestMethod]
+        public void AnonymousObjectInitializer()
+        {
+            Run("AnonymousObjectInitializer");
+        }
+
         private void Run(string test)
         {
             var src = Load("SA1101", test);

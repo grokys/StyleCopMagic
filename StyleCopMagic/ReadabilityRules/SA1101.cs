@@ -74,7 +74,8 @@ namespace StyleCopMagic
             bool result = false;
 
             // If we're in an object initializer, don't add a 'this.'.
-            if (identifier.FirstAncestorOrSelf<InitializerExpressionSyntax>() != null)
+            if (identifier.FirstAncestorOrSelf<InitializerExpressionSyntax>() != null ||
+                identifier.FirstAncestorOrSelf<AnonymousObjectCreationExpressionSyntax>() != null)
             {
                 return false;
             }
