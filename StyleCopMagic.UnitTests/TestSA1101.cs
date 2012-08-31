@@ -66,14 +66,14 @@ namespace StyleCopMagic.UnitTests
         {
             Run("EventCall");
         }
-
+        
         [TestMethod]
         public void AmbiguousOverloadedMethodCall()
         {
             Run("AmbiguousOverloadedMethodCall");
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void UsingCrash()
         {
             Run("UsingCrash");

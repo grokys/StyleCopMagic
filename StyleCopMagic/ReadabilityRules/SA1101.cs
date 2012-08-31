@@ -75,8 +75,21 @@ namespace StyleCopMagic
 
             if (parentClass != null)
             {
-                NamedTypeSymbol parentClassSymbol = this.semanticModel.GetDeclaredSymbol(parentClass);
-                SymbolInfo identifierSymbol = this.semanticModel.GetSymbolInfo(identifier);
+                NamedTypeSymbol parentClassSymbol;
+                SymbolInfo identifierSymbol;
+
+                try
+                {
+                    // GetSymbolInfo sometimes throws a NullReferenceException in the June 2012 
+                    // Roslyn CTP with a symbol in a using statement can't be resolved. 
+                    // This occurance is tested by the UsingCrash test.
+                    parentClassSymbol = this.semanticModel.GetDeclaredSymbol(parentClass);
+                    identifierSymbol = this.semanticModel.GetSymbolInfo(identifier);
+                }
+                catch
+                {
+                    return false;
+                }
 
                 IEnumerable<Symbol> symbols;
 
