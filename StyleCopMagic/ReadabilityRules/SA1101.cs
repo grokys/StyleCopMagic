@@ -70,57 +70,55 @@ namespace StyleCopMagic
 
         bool IsMember(IdentifierNameSyntax identifier)
         {
-            ClassDeclarationSyntax parentClass = identifier.FirstAncestorOrSelf<ClassDeclarationSyntax>();
+            SymbolInfo identifierSymbol;
             bool result = false;
 
-            if (parentClass != null)
+            // If we're in an object initializer, don't add a 'this.'.
+            if (identifier.FirstAncestorOrSelf<InitializerExpressionSyntax>() != null)
             {
-                NamedTypeSymbol parentClassSymbol;
-                SymbolInfo identifierSymbol;
+                return false;
+            }
 
-                try
-                {
-                    // GetSymbolInfo sometimes throws a NullReferenceException in the June 2012 
-                    // Roslyn CTP with a symbol in a using statement can't be resolved. 
-                    // This occurance is tested by the UsingCrash test.
-                    parentClassSymbol = this.semanticModel.GetDeclaredSymbol(parentClass);
-                    identifierSymbol = this.semanticModel.GetSymbolInfo(identifier);
-                }
-                catch
-                {
-                    return false;
-                }
+            try
+            {
+                // GetSymbolInfo sometimes throws a NullReferenceException in the June 2012 
+                // Roslyn CTP with a symbol in a using statement can't be resolved. 
+                // This occurance is tested by the UsingCrash test.
+                identifierSymbol = this.semanticModel.GetSymbolInfo(identifier);
+            }
+            catch
+            {
+                return false;
+            }
 
-                IEnumerable<Symbol> symbols;
+            IEnumerable<Symbol> symbols;
 
-                if (identifierSymbol.Symbol != null)
-                {
-                    symbols = new[] { identifierSymbol.Symbol };
-                }
-                else if (identifierSymbol.CandidateReason == CandidateReason.OverloadResolutionFailure)
-                {
-                    symbols = identifierSymbol.CandidateSymbols.ToArray();
-                }
-                else
-                {
-                    return false;
-                }
+            if (identifierSymbol.Symbol != null)
+            {
+                symbols = new[] { identifierSymbol.Symbol };
+            }
+            else if (identifierSymbol.CandidateReason == CandidateReason.OverloadResolutionFailure)
+            {
+                symbols = identifierSymbol.CandidateSymbols.ToArray();
+            }
+            else
+            {
+                return false;
+            }
+            
+            result = true;
 
-                result = true;
+            foreach (Symbol symbol in symbols)
+            {
+                FieldSymbol field = symbol.OriginalDefinition as FieldSymbol;
+                MethodSymbol method = symbol.OriginalDefinition as MethodSymbol;
+                PropertySymbol property = symbol.OriginalDefinition as PropertySymbol;
+                EventSymbol @event = symbol.OriginalDefinition as EventSymbol;
 
-                foreach (Symbol symbol in symbols)
-                {
-                    FieldSymbol field = symbol.OriginalDefinition as FieldSymbol;
-                    MethodSymbol method = symbol.OriginalDefinition as MethodSymbol;
-                    PropertySymbol property = symbol.OriginalDefinition as PropertySymbol;
-                    EventSymbol @event = symbol.OriginalDefinition as EventSymbol;
-
-                    result &= symbol.ContainingType == parentClassSymbol &&
-                              ((field != null && !field.IsStatic) ||
-                               (method != null && !method.IsStatic && method.MethodKind != MethodKind.Constructor) ||
-                               (property != null && !property.IsStatic) ||
-                               (@event != null && !@event.IsStatic));
-                }
+                result &= ((field != null && !field.IsStatic) ||
+                            (method != null && !method.IsStatic && method.MethodKind != MethodKind.Constructor) ||
+                            (property != null && !property.IsStatic) ||
+                            (@event != null && !@event.IsStatic));
             }
 
             return result;

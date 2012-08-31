@@ -91,6 +91,18 @@ namespace StyleCopMagic.UnitTests
             Run("CreateSelf");
         }
 
+        [TestMethod]
+        public void InnerStructFieldWrite()
+        {
+            Run("InnerStructFieldWrite");
+        }
+
+        [TestMethod]
+        public void ObjectInitializer()
+        {
+            Run("ObjectInitializer");
+        }
+
         private void Run(string test)
         {
             var src = Load("SA1101", test);

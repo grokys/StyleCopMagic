@@ -35,6 +35,11 @@
 
             if (workspace != null)
             {
+                if (args.Length > 1)
+                {
+                    includeFiles = new List<string>(args.Skip(1));
+                }
+
                 Process(workspace);
             }
         }
@@ -50,21 +55,24 @@
                 {
                     IDocument document = newSolution.GetDocument(documentId);
 
-                    if (document.LanguageServices.Language == LanguageNames.CSharp)
+                    if (includeFiles == null || includeFiles.Contains(document.Name))
                     {
-                        Console.WriteLine(document.Name);
+                        if (document.LanguageServices.Language == LanguageNames.CSharp)
+                        {
+                            Console.WriteLine(document.Name);
 
-                        try
-                        {
-                            SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
-                            SA1101 rule = new SA1101(tree);
-                            SyntaxTree newTree = rule.Repair();
-                            IDocument newDocument = document.UpdateSyntaxRoot(newTree.GetRoot());
-                            newSolution = newDocument.Project.Solution;
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e.Message);
+                            try
+                            {
+                                SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
+                                SA1101 rule = new SA1101(tree);
+                                SyntaxTree newTree = rule.Repair();
+                                IDocument newDocument = document.UpdateSyntaxRoot(newTree.GetRoot());
+                                newSolution = newDocument.Project.Solution;
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
                         }
                     }
                 }
@@ -72,5 +80,7 @@
 
             workspace.ApplyChanges(solution, newSolution);
         }
+
+        static List<string> includeFiles;
     }
 }
