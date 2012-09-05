@@ -6,6 +6,7 @@
 
 namespace StyleCopMagic
 {
+    using System.Linq;
     using Roslyn.Compilers.CSharp;
     using Roslyn.Services;
 
@@ -35,12 +36,20 @@ namespace StyleCopMagic
 
         public override SyntaxNode VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
         {
-            string summary = string.Format(
-                "/// <summary>\n" +
-                "/// Initializes a new instance of the <see cref=\"{0}\"/> class.\n" +
-                "/// </summary>\n",
-                node.Identifier);
-            return node.WithLeadingTrivia(Syntax.ParseLeadingTrivia(summary));
+            SyntaxTriviaList existingTrivia = node.GetLeadingTrivia();
+
+            if (!existingTrivia.Any(SyntaxKind.DocumentationComment))
+            {
+                string summary = string.Format(
+                    "/// <summary>\n" +
+                    "/// Initializes a new instance of the <see cref=\"{0}\"/> class.\n" +
+                    "/// </summary>\n",
+                    node.Identifier);
+                var trivia = Syntax.ParseLeadingTrivia(summary).Concat(existingTrivia);
+                return node.WithLeadingTrivia(trivia);
+            }
+
+            return base.VisitConstructorDeclaration(node);
         }
     }
 }

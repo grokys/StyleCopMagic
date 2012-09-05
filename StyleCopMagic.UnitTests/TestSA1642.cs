@@ -15,5 +15,17 @@ namespace StyleCopMagic.UnitTests
         {
             Run("DefaultConstructor");
         }
+
+        [TestMethod]
+        public void DocumentationCommentAlreadyExists()
+        {
+            Run("DocumentationCommentAlreadyExists");
+        }
+
+        [TestMethod]
+        public void CommentAlreadyExists()
+        {
+            Run("CommentAlreadyExists");
+        }
     }
 }
