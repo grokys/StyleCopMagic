@@ -1,17 +1,14 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Roslyn.Compilers.CSharp;
-using System.IO;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace StyleCopMagic.UnitTests
 {
     [TestClass]
-    public class TestSA1101
+    public class TestSA1101 : TestBase
     {
-        const string TestFilePath = @"..\..\..\TestFiles";
+        public TestSA1101()
+            : base(typeof(SA1101))
+        {
+        }
 
         [TestMethod]
         public void FieldWrite()
@@ -66,7 +63,7 @@ namespace StyleCopMagic.UnitTests
         {
             Run("EventCall");
         }
-        
+
         [TestMethod]
         public void AmbiguousOverloadedMethodCall()
         {
@@ -107,33 +104,6 @@ namespace StyleCopMagic.UnitTests
         public void AnonymousObjectInitializer()
         {
             Run("AnonymousObjectInitializer");
-        }
-
-        private void Run(string test)
-        {
-            var src = Load("SA1101", test);
-            var target = new SA1101(src);
-            var result = target.Repair();
-            Compare(result, "SA1101", test);
-        }
-        
-        private SyntaxTree Load(string rule, string test)
-        {
-            string path = Path.Combine(TestFilePath, rule, test + ".src.cs");
-            string file = File.ReadAllText(path);
-            return SyntaxTree.ParseCompilationUnit(file);
-        }
-
-        private void Compare(SyntaxTree src, string rule, string test)
-        {
-            string expectedPath = Path.Combine(TestFilePath, rule, test + ".expected.cs");
-            string actualPath = Path.Combine(TestFilePath, rule, test + ".actual.cs");
-            string expected = File.ReadAllText(expectedPath);
-            string actual = src.GetText().GetText();
-
-            File.WriteAllText(actualPath, actual);
-
-            Assert.AreEqual(expected, actual);
         }
     }
 }

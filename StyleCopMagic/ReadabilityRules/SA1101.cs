@@ -6,14 +6,12 @@
 
 namespace StyleCopMagic
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using Roslyn.Compilers.CSharp;
     using Roslyn.Compilers;
+    using Roslyn.Compilers.CSharp;
 
-    public class SA1101 : SyntaxRewriter
+    public class SA1101 : SyntaxRewriter, IFixer
     {
         private SyntaxTree src;
         private Compilation compilation;
@@ -23,7 +21,7 @@ namespace StyleCopMagic
         {
             this.src = src;
             this.compilation = Compilation.Create(
-                "src", 
+                "src",
                 syntaxTrees: new[] { this.src });
             this.semanticModel = this.compilation.GetSemanticModel(src);
         }
@@ -42,7 +40,7 @@ namespace StyleCopMagic
             if (IsMember(node))
             {
                 MemberAccessExpressionSyntax parent = node.Parent as MemberAccessExpressionSyntax;
-                    
+
                 // If the parent expression isn't a member access expression then we need to
                 // add a 'this.'.
                 bool rewrite = parent == null;
@@ -106,7 +104,7 @@ namespace StyleCopMagic
             {
                 return false;
             }
-            
+
             result = true;
 
             foreach (Symbol symbol in symbols)
@@ -126,3 +124,4 @@ namespace StyleCopMagic
         }
     }
 }
+
