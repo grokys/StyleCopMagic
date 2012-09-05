@@ -45,7 +45,7 @@ namespace StyleCopMagic
                     "/// Initializes a new instance of the <see cref=\"{0}\"/> class.\n" +
                     "/// </summary>\n",
                     node.Identifier);
-                var trivia = Syntax.ParseLeadingTrivia(summary).Concat(existingTrivia);
+                var trivia = existingTrivia.Concat(Syntax.ParseLeadingTrivia(summary));
                 return node.WithLeadingTrivia(trivia);
             }
 

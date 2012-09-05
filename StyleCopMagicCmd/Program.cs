@@ -2,13 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using System.IO;
+    using System.Linq;
+    using System.Reflection;
+    using Roslyn.Compilers;
     using Roslyn.Compilers.CSharp;
     using Roslyn.Services;
     using StyleCopMagic;
-    using Roslyn.Compilers;
 
     class Program
     {
@@ -40,8 +40,17 @@
                     includeFiles = new List<string>(args.Skip(1));
                 }
 
+                LoadFixers();
                 Process(workspace);
             }
+        }
+
+        private static void LoadFixers()
+        {
+            var types = from type in Assembly.GetAssembly(typeof(IFixer)).GetTypes()
+                        where !type.IsInterface && typeof(IFixer).IsAssignableFrom(type)
+                        select type;
+            fixers = new List<Type>(types);
         }
 
         private static void Process(IWorkspace workspace)
@@ -61,17 +70,20 @@
                         {
                             Console.WriteLine(document.Name);
 
-                            try
+                            foreach (Type type in fixers)
                             {
-                                SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
-                                SA1101 rule = new SA1101(tree);
-                                SyntaxTree newTree = rule.Repair();
-                                IDocument newDocument = document.UpdateSyntaxRoot(newTree.GetRoot());
-                                newSolution = newDocument.Project.Solution;
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine(e.Message);
+                                try
+                                {
+                                    SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
+                                    IFixer fixer = CreateFixer(type, tree);
+                                    SyntaxTree newTree = fixer.Repair();
+                                    IDocument newDocument = document.UpdateSyntaxRoot(newTree.GetRoot());
+                                    newSolution = newDocument.Project.Solution;
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e.Message);
+                                }
                             }
                         }
                     }
@@ -81,6 +93,13 @@
             workspace.ApplyChanges(solution, newSolution);
         }
 
+        private static IFixer CreateFixer(Type type, SyntaxTree tree)
+        {
+            ConstructorInfo constructor = type.GetConstructor(new[] { typeof(SyntaxTree) });
+            return (IFixer)constructor.Invoke(new[] { tree });
+        }
+
         static List<string> includeFiles;
+        static List<Type> fixers;
     }
 }
