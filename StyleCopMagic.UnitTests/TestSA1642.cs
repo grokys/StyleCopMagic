@@ -27,5 +27,11 @@ namespace StyleCopMagic.UnitTests
         {
             Run("CommentAlreadyExists");
         }
+
+        [TestMethod]
+        public void StructConstructor()
+        {
+            Run("StructConstructor");
+        }
     }
 }
