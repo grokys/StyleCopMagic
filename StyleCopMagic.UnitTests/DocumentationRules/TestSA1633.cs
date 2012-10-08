@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleCopMagic.DocumentationRules;
 
 namespace StyleCopMagic.UnitTests.DocumentationRules
 {

@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace StyleCopMagic
+namespace StyleCopMagic.DocumentationRules
 {
     using System.IO;
     using System.Linq;

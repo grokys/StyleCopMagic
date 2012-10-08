@@ -4,7 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace StyleCopMagic
+namespace StyleCopMagic.ReadabilityRules
 {
     using System.Collections.Generic;
     using System.Linq;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StyleCopMagic.ReadabilityRules;
 
 namespace StyleCopMagic.UnitTests.ReadabilityRules
 {
