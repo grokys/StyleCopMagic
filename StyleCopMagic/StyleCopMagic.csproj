@@ -52,6 +52,7 @@
     <Compile Include="DocumentationRules\SA1633.cs" />
     <Compile Include="DocumentationRules\SA1642.cs" />
     <Compile Include="IFixer.cs" />
+    <Compile Include="FixerFactory.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadabilityRules\SA1101.cs" />

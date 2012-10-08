@@ -16,7 +16,7 @@ namespace StyleCopMagic
         private Compilation compilation;
         private SemanticModel semanticModel;
 
-        public SA1642(SyntaxTree src, ISettings settings)
+        public SA1642(SyntaxTree src, Compilation compilation, ISettings settings)
         {
             this.src = src;
             this.compilation = Compilation.Create(

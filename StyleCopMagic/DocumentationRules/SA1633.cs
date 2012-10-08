@@ -16,7 +16,7 @@ namespace StyleCopMagic
         private SyntaxTree src;
         private ISettings settings;
 
-        public SA1633(SyntaxTree src, ISettings settings)
+        public SA1633(SyntaxTree src, Compilation compilation, ISettings settings)
         {
             this.src = src;
             this.settings = settings;

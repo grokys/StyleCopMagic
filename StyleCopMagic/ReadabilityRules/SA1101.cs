@@ -14,16 +14,12 @@ namespace StyleCopMagic
     public class SA1101 : SyntaxRewriter, IFixer
     {
         private SyntaxTree src;
-        private Compilation compilation;
         private SemanticModel semanticModel;
 
-        public SA1101(SyntaxTree src, ISettings settings)
+        public SA1101(SyntaxTree src, Compilation compilation, ISettings settings)
         {
             this.src = src;
-            this.compilation = Compilation.Create(
-                "src",
-                syntaxTrees: new[] { this.src });
-            this.semanticModel = this.compilation.GetSemanticModel(src);
+            this.semanticModel = compilation.GetSemanticModel(src);
         }
 
         /// <summary>

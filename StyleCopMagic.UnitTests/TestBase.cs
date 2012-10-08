@@ -8,7 +8,6 @@ namespace StyleCopMagic.UnitTests
 {
     using System;
     using System.IO;
-    using System.Reflection;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Roslyn.Compilers.CSharp;
 
@@ -33,9 +32,8 @@ namespace StyleCopMagic.UnitTests
 
         private IFixer Create(SyntaxTree src)
         {
-            Type[] ctorArgs = new[] { typeof(SyntaxTree), typeof(ISettings) };
-            ConstructorInfo constructor = this.rule.GetConstructor(ctorArgs);
-            return (IFixer)constructor.Invoke(new object[] { src, new Settings() });
+            Compilation compilation = Compilation.Create("test", syntaxTrees: new[] { src });
+            return FixerFactory.Create(rule, src, compilation, new MockSettings());
         }
 
         private SyntaxTree Load(string rule, string test)
@@ -57,7 +55,7 @@ namespace StyleCopMagic.UnitTests
             Assert.AreEqual(expected, actual);
         }
 
-        class Settings : ISettings
+        class MockSettings : ISettings
         {
             public string CompanyName
             {

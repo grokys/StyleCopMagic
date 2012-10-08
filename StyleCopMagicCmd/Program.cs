@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
     using Roslyn.Compilers;
     using Roslyn.Compilers.CSharp;
     using Roslyn.Services;
@@ -37,7 +36,6 @@
             }
 
             string settingsFilePath = Path.Combine(Path.GetDirectoryName(args[0]), "Settings.StyleCop");
-
             settings = (File.Exists(settingsFilePath)) ? new SettingsFile(settingsFilePath) : new SettingsFile();
 
             if (args.Length > 1)
@@ -45,27 +43,21 @@
                 includeFiles = new List<string>(args.Skip(1));
             }
 
-            LoadFixers();
             Process(workspace, settings);
 
             return 0;
-        }
-
-        private static void LoadFixers()
-        {
-            var types = from type in Assembly.GetAssembly(typeof(IFixer)).GetTypes()
-                        where !type.IsInterface && typeof(IFixer).IsAssignableFrom(type)
-                        select type;
-            fixers = new List<Type>(types);
         }
 
         private static void Process(IWorkspace workspace, ISettings settings)
         {
             ISolution solution = workspace.CurrentSolution;
             ISolution newSolution = solution;
+            IEnumerable<IProject> csharpProjects = solution.Projects.Where(x => x.LanguageServices.Language == LanguageNames.CSharp);
 
-            foreach (IProject project in solution.Projects)
+            foreach (IProject project in csharpProjects)
             {
+                Compilation compilation = (Compilation)project.GetCompilation();
+
                 foreach (DocumentId documentId in project.DocumentIds)
                 {
                     IDocument document = newSolution.GetDocument(documentId);
@@ -81,7 +73,7 @@
                                 try
                                 {
                                     SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
-                                    IFixer fixer = CreateFixer(type, tree, settings);
+                                    IFixer fixer = FixerFactory.Create(type, tree, compilation, settings);
                                     SyntaxTree newTree = fixer.Repair();
                                     document = document.UpdateSyntaxRoot(newTree.GetRoot());
                                     newSolution = document.Project.Solution;
@@ -99,14 +91,7 @@
             workspace.ApplyChanges(solution, newSolution);
         }
 
-        private static IFixer CreateFixer(Type type, SyntaxTree tree, ISettings settings)
-        {
-            Type[] ctorArgs = new[] { typeof(SyntaxTree), typeof(ISettings) };
-            ConstructorInfo constructor = type.GetConstructor(ctorArgs);
-            return (IFixer)constructor.Invoke(new object[] { tree, settings });
-        }
-
         static List<string> includeFiles;
-        static List<Type> fixers;
+        static List<Type> fixers = new List<Type>(FixerFactory.EnumerateFixers());
     }
 }
