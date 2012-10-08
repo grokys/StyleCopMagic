@@ -12,13 +12,15 @@
 
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             IWorkspace workspace = null;
+            ISettings settings;
 
             if (args.Length == 0)
             {
                 Console.WriteLine("Usage: StyleCopMagicCmd ProjectFile");
+                return 1;
             }
             if (Path.GetExtension(args[0]) == ".sln")
             {
@@ -31,18 +33,22 @@
             else
             {
                 Console.WriteLine("Unexpected project file extension. Expected .sln or .csproj.");
+                return 1;
             }
 
-            if (workspace != null)
+            string settingsFilePath = Path.Combine(Path.GetDirectoryName(args[0]), "Settings.StyleCop");
+
+            settings = (File.Exists(settingsFilePath)) ? new SettingsFile(settingsFilePath) : new SettingsFile();
+
+            if (args.Length > 1)
             {
-                if (args.Length > 1)
-                {
-                    includeFiles = new List<string>(args.Skip(1));
-                }
-
-                LoadFixers();
-                Process(workspace);
+                includeFiles = new List<string>(args.Skip(1));
             }
+
+            LoadFixers();
+            Process(workspace, settings);
+
+            return 0;
         }
 
         private static void LoadFixers()
@@ -53,7 +59,7 @@
             fixers = new List<Type>(types);
         }
 
-        private static void Process(IWorkspace workspace)
+        private static void Process(IWorkspace workspace, ISettings settings)
         {
             ISolution solution = workspace.CurrentSolution;
             ISolution newSolution = solution;
@@ -75,10 +81,10 @@
                                 try
                                 {
                                     SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
-                                    IFixer fixer = CreateFixer(type, tree);
+                                    IFixer fixer = CreateFixer(type, tree, settings);
                                     SyntaxTree newTree = fixer.Repair();
-                                    IDocument newDocument = document.UpdateSyntaxRoot(newTree.GetRoot());
-                                    newSolution = newDocument.Project.Solution;
+                                    document = document.UpdateSyntaxRoot(newTree.GetRoot());
+                                    newSolution = document.Project.Solution;
                                 }
                                 catch (Exception e)
                                 {
@@ -93,10 +99,11 @@
             workspace.ApplyChanges(solution, newSolution);
         }
 
-        private static IFixer CreateFixer(Type type, SyntaxTree tree)
+        private static IFixer CreateFixer(Type type, SyntaxTree tree, ISettings settings)
         {
-            ConstructorInfo constructor = type.GetConstructor(new[] { typeof(SyntaxTree) });
-            return (IFixer)constructor.Invoke(new[] { tree });
+            Type[] ctorArgs = new[] { typeof(SyntaxTree), typeof(ISettings) };
+            ConstructorInfo constructor = type.GetConstructor(ctorArgs);
+            return (IFixer)constructor.Invoke(new object[] { tree, settings });
         }
 
         static List<string> includeFiles;

@@ -14,6 +14,11 @@ namespace StyleCopMagic
     /// </summary>
     public class SettingsFile : ISettings
     {
+        public SettingsFile()
+        {
+            this.CompanyName = this.Copyright = string.Empty;
+        }
+
         public SettingsFile(string fileName)
         {
             XDocument document = XDocument.Load(fileName);

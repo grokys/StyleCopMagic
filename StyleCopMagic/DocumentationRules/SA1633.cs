@@ -7,7 +7,9 @@
 namespace StyleCopMagic
 {
     using System.IO;
+    using System.Linq;
     using Roslyn.Compilers.CSharp;
+    using Roslyn.Services;
 
     public class SA1633 : SyntaxRewriter, IFixer
     {
@@ -22,23 +24,34 @@ namespace StyleCopMagic
 
         public SyntaxTree Repair()
         {
-            string comment = string.Format(
-                "//-----------------------------------------------------------------------\n" +
-                "// <copyright file=\"{0}\" company=\"{1}\">\n" +
-                "// {2}\n" +
-                "// </copyright>\n" +
-                "//-----------------------------------------------------------------------\n" +
-                "\n",
-                Path.GetFileName(this.src.FilePath),
-                this.settings.CompanyName,
-                this.settings.Copyright);
+            SyntaxNode result = Visit(src.GetRoot());
+            return SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result.Format().GetFormattedRoot());
+        }
 
-            // TODO: Work out how to make Roslyn match this to the file EOL format.
-            comment = comment.Replace("\n", "\r\n");
+        public override SyntaxNode Visit(SyntaxNode node)
+        {
+            if (node == src.GetRoot().ChildNodes().First())
+            {
+                string comment = string.Format(
+                    "//-----------------------------------------------------------------------\n" +
+                    "// <copyright file=\"{0}\" company=\"{1}\">\n" +
+                    "// {2}\n" +
+                    "// </copyright>\n" +
+                    "//-----------------------------------------------------------------------\n" +
+                    "\n",
+                    Path.GetFileName(this.src.FilePath),
+                    this.settings.CompanyName,
+                    this.settings.Copyright);
 
-            return SyntaxTree.Create(
-                this.src.FilePath,
-                (CompilationUnitSyntax)this.src.GetRoot().WithLeadingTrivia(Syntax.ParseLeadingTrivia(comment)));
+                // TODO: figure out how to do this properly.
+                comment = comment.Replace("\n", "\r\n");
+
+                return node.WithLeadingTrivia(Syntax.ParseLeadingTrivia(comment));
+            }
+            else
+            {
+                return base.Visit(node);
+            }
         }
     }
 }

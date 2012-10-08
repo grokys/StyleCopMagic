@@ -13,6 +13,20 @@ namespace StyleCopMagic.UnitTests
     public class SettingsFileTest
     {
         [TestMethod]
+        public void CompanyName_Should_Be_Empty_String_With_Default_Ctor()
+        {
+            SettingsFile target = new SettingsFile();
+            Assert.AreEqual(string.Empty, target.CompanyName);
+        }
+
+        [TestMethod]
+        public void Copyright_Should_Be_Empty_String_With_Default_Ctor()
+        {
+            SettingsFile target = new SettingsFile();
+            Assert.AreEqual(string.Empty, target.Copyright);
+        }
+
+        [TestMethod]
         public void Test_Empty_SettingsFile()
         {
             string path = Path.Combine(TestBase.TestFilePath, "SettingsFile", "Empty.StyleCop");
