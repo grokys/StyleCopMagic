@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="ReadabilityRules.cs" company="">
+// <copyright file="SA1101.cs" company="">
 // TODO: Update copyright text.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -17,7 +17,7 @@ namespace StyleCopMagic
         private Compilation compilation;
         private SemanticModel semanticModel;
 
-        public SA1101(SyntaxTree src)
+        public SA1101(SyntaxTree src, ISettings settings)
         {
             this.src = src;
             this.compilation = Compilation.Create(

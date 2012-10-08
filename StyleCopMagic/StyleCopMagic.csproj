@@ -49,10 +49,13 @@
     <Reference Include="Roslyn.Services.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DocumentationRules\SA1633.cs" />
     <Compile Include="DocumentationRules\SA1642.cs" />
     <Compile Include="IFixer.cs" />
+    <Compile Include="ISettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadabilityRules\SA1101.cs" />
+    <Compile Include="SettingsFile.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

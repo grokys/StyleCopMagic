@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace StyleCopMagic.UnitTests
+namespace StyleCopMagic.UnitTests.DocumentationRules
 {
     [TestClass]
     public class TestSA1642 : TestBase

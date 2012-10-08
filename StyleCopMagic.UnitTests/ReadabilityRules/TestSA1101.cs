@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace StyleCopMagic.UnitTests
+namespace StyleCopMagic.UnitTests.ReadabilityRules
 {
     [TestClass]
     public class TestSA1101 : TestBase

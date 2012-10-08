@@ -49,10 +49,12 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestSA1642.cs" />
+    <Compile Include="DocumentationRules\TestSA1633.cs" />
+    <Compile Include="DocumentationRules\TestSA1642.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SettingsFileTest.cs" />
     <Compile Include="TestBase.cs" />
-    <Compile Include="TestSA1101.cs" />
+    <Compile Include="ReadabilityRules\TestSA1101.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StyleCopMagic\StyleCopMagic.csproj">
