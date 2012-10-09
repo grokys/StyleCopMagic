@@ -54,7 +54,9 @@
     <Compile Include="IFixer.cs" />
     <Compile Include="FixerFactory.cs" />
     <Compile Include="ISettings.cs" />
-    <Compile Include="LayoutRules\SA1503.cs" />
+    <Compile Include="LayoutRules\SA1503.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="OrderingRules\SA1200.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadabilityRules\SA1101.cs" />

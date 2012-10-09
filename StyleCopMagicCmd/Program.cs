@@ -56,7 +56,7 @@
 
             foreach (IProject project in csharpProjects)
             {
-                Compilation compilation = (Compilation)project.GetCompilation();
+                IProject newProject = project;
 
                 foreach (DocumentId documentId in project.DocumentIds)
                 {
@@ -70,13 +70,16 @@
 
                             foreach (Type type in fixers)
                             {
+                                Compilation compilation = (Compilation)newProject.GetCompilation();
+
                                 try
                                 {
                                     SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
                                     IFixer fixer = FixerFactory.Create(type, tree, compilation, settings);
                                     SyntaxTree newTree = fixer.Repair();
                                     document = document.UpdateSyntaxRoot(newTree.GetRoot());
-                                    newSolution = document.Project.Solution;
+                                    newProject = document.Project;
+                                    newSolution = newProject.Solution;
                                 }
                                 catch (Exception e)
                                 {
