@@ -59,6 +59,7 @@
     </Compile>
     <Compile Include="OrderingRules\SA1200.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpacingRules\SA1005.cs" />
     <Compile Include="ReadabilityRules\SA1101.cs" />
     <Compile Include="SettingsFile.cs" />
   </ItemGroup>

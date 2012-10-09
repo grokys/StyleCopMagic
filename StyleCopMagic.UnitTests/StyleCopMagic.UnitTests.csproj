@@ -55,6 +55,7 @@
     <Compile Include="OrderingRules\TestSA1200.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsFileTest.cs" />
+    <Compile Include="SpacingRules\TestSA1005.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="ReadabilityRules\TestSA1101.cs" />
   </ItemGroup>
