@@ -11,7 +11,6 @@ namespace StyleCopMagic.SpacingRules
     public class SA1005 : SyntaxRewriter, IFixer
     {
         private SyntaxTree src;
-        private SemanticModel semanticModel;
 
         public SA1005(SyntaxTree src, Compilation compilation, ISettings settings)
         {
