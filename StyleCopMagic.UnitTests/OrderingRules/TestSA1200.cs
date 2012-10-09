@@ -1,20 +1,20 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StyleCopMagic.OrderingRules;
+using StyleCopMagic.SpacingRules;
 
-namespace StyleCopMagic.UnitTests.OrderingRules
+namespace StyleCopMagic.UnitTests.SpacingRules
 {
     [TestClass]
-    public class TestSA1200 : TestBase
+    public class TestSA1005 : TestBase
     {
-        public TestSA1200()
-            : base(typeof(SA1200))
+        public TestSA1005()
+            : base(typeof(SA1005))
         {
         }
 
         [TestMethod]
-        public void UsingsOutsideNamespace()
+        public void SingleLineComment()
         {
-            Run("UsingsOutsideNamespace");
+            Run("SingleLineComment");
         }
     }
 }

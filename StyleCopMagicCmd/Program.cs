@@ -14,7 +14,6 @@
         static int Main(string[] args)
         {
             IWorkspace workspace = null;
-            ISettings settings;
 
             if (args.Length == 0)
             {
@@ -35,20 +34,17 @@
                 return 1;
             }
 
-            string settingsFilePath = Path.Combine(Path.GetDirectoryName(args[0]), "Settings.StyleCop");
-            settings = (File.Exists(settingsFilePath)) ? new SettingsFile(settingsFilePath) : new SettingsFile();
-
             if (args.Length > 1)
             {
                 includeFiles = new List<string>(args.Skip(1));
             }
 
-            Process(workspace, settings);
+            Process(workspace);
 
             return 0;
         }
 
-        private static void Process(IWorkspace workspace, ISettings settings)
+        private static void Process(IWorkspace workspace)
         {
             ISolution solution = workspace.CurrentSolution;
             ISolution newSolution = solution;
@@ -57,6 +53,8 @@
             foreach (IProject project in csharpProjects)
             {
                 IProject newProject = project;
+                string settingsFilePath = Path.Combine(Path.GetDirectoryName(project.FilePath), "Settings.StyleCop");
+                ISettings settings = (File.Exists(settingsFilePath)) ? new SettingsFile(settingsFilePath) : new SettingsFile();
 
                 foreach (DocumentId documentId in project.DocumentIds)
                 {

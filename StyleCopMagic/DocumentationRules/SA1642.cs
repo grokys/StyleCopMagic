@@ -38,7 +38,9 @@ namespace StyleCopMagic.DocumentationRules
         {
             SyntaxTriviaList existingTrivia = node.GetLeadingTrivia();
 
-            if (!existingTrivia.Any(SyntaxKind.DocumentationComment))
+            // TODO: just existingTrivia.Any(SyntaxKind.DocumentationComment) should work here
+            // but sometimes doc comments aren't picked up by Roslyn June 2012.
+            if (!HasDocumentationComment(existingTrivia))
             {
                 MethodSymbol symbol = this.semanticModel.GetDeclaredSymbol(node);
                 NamedTypeSymbol containingType = symbol.ContainingType;
@@ -55,6 +57,12 @@ namespace StyleCopMagic.DocumentationRules
             }
 
             return base.VisitConstructorDeclaration(node);
+        }
+
+        private bool HasDocumentationComment(SyntaxTriviaList existingTrivia)
+        {
+            return existingTrivia.Any(SyntaxKind.DocumentationComment) ||
+                   existingTrivia.Any(x => x.GetText().IndexOf("<summary>") != -1);
         }
     }
 }

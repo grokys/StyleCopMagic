@@ -37,12 +37,14 @@ namespace StyleCopMagic.OrderingRules
                     // Remove the existing using statements.
                     node = node.ReplaceNodes(usingNodes, (a, b) => null);
 
-                    // Remove the leading trivia from the first using.
+                    // Remove the leading trivia from the first using directive. This will be added to the namespace.
                     SyntaxTriviaList leadingTrivia = usingNodes[0].GetLeadingTrivia();
                     usingNodes[0] = usingNodes[0].WithLeadingTrivia();
 
                     // Add a trailing newline to the last using.
-                    usingNodes[usingNodes.Length - 1] = usingNodes.Last().WithTrailingTrivia(Syntax.ElasticMarker);
+                    usingNodes[usingNodes.Length - 1] = usingNodes.Last().WithTrailingTrivia(
+                        Syntax.CarriageReturnLineFeed,
+                        Syntax.CarriageReturnLineFeed);
 
                     // Create a new namespace statment with the usings and the leading trivia we removed earlier.
                     SyntaxNode newNamespaceNode = namespaceNode
@@ -54,7 +56,7 @@ namespace StyleCopMagic.OrderingRules
                         node.ChildNodes().Take(1),
                         (a, b) => newNamespaceNode);
 
-                    return CodeAnnotations.Formatting.AddAnnotationTo(node);
+                    return node;
                 }
             }
 
