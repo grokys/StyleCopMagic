@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="DocumentationRules\TestSA1633.cs" />
     <Compile Include="DocumentationRules\TestSA1642.cs" />
+    <Compile Include="LayoutRules\TestSA1503.cs" />
     <Compile Include="OrderingRules\TestSA1200.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsFileTest.cs" />
