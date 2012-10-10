@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="DocumentationRules\SA1633.cs" />
     <Compile Include="DocumentationRules\SA1642.cs" />
+    <Compile Include="OrderingRules\SA1201.cs" />
     <Compile Include="RuleRewriter.cs" />
     <Compile Include="RuleRewriterFactory.cs" />
     <Compile Include="ISettings.cs" />
