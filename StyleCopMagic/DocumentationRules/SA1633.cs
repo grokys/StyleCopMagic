@@ -7,30 +7,20 @@
 namespace StyleCopMagic.DocumentationRules
 {
     using System.IO;
-    using System.Linq;
     using Roslyn.Compilers.CSharp;
-    using Roslyn.Services;
 
-    public class SA1633 : SyntaxRewriter, IFixer
+    public class SA1633 : RuleRewriter
     {
-        private SyntaxTree src;
         private ISettings settings;
 
-        public SA1633(SyntaxTree src, Compilation compilation, ISettings settings)
+        public SA1633(ISettings settings)
         {
-            this.src = src;
             this.settings = settings;
-        }
-
-        public SyntaxTree Repair()
-        {
-            SyntaxNode result = Visit(src.GetRoot());
-            return SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result.Format().GetFormattedRoot());
         }
 
         public override SyntaxNode Visit(SyntaxNode node)
         {
-            if (node == src.GetRoot().ChildNodes().First())
+            if (node.Parent == null)
             {
                 string comment = string.Format(
                     "//-----------------------------------------------------------------------\n" +
@@ -39,7 +29,7 @@ namespace StyleCopMagic.DocumentationRules
                     "// </copyright>\n" +
                     "//-----------------------------------------------------------------------\n" +
                     "\n",
-                    Path.GetFileName(this.src.FilePath),
+                    Path.GetFileName(node.SyntaxTree.FilePath),
                     this.settings.CompanyName,
                     this.settings.Copyright);
 

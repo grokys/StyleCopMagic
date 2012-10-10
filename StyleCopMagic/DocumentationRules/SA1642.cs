@@ -8,30 +8,19 @@ namespace StyleCopMagic.DocumentationRules
 {
     using System.Linq;
     using Roslyn.Compilers.CSharp;
-    using Roslyn.Services;
 
-    public class SA1642 : SyntaxRewriter, IFixer
+    public class SA1642 : RuleRewriter
     {
-        private SyntaxTree src;
-        private Compilation compilation;
         private SemanticModel semanticModel;
 
-        public SA1642(SyntaxTree src, Compilation compilation, ISettings settings)
+        public SA1642(SemanticModel semanticModel)
         {
-            this.src = src;
-            this.compilation = Compilation.Create(
-                "src",
-                syntaxTrees: new[] { this.src });
-            this.semanticModel = this.compilation.GetSemanticModel(src);
+            this.semanticModel = semanticModel;
         }
 
-        /// <summary>
-        /// Repairs SA1642 (ConstructorSummaryDocumentationMustBeginWithStandardText) warnings <see cref=""/>.
-        /// </summary>
-        public SyntaxTree Repair()
+        public override SyntaxNode Visit(SyntaxNode node)
         {
-            SyntaxNode result = Visit(src.GetRoot());
-            return SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result.Format().GetFormattedRoot());
+            return base.Visit(node);
         }
 
         public override SyntaxNode VisitConstructorDeclaration(ConstructorDeclarationSyntax node)

@@ -1,5 +1,5 @@
 ﻿// -----------------------------------------------------------------------
-// <copyright file="SA1101.cs" company="">
+// <copyright file="SA1503.cs" company="">
 // TODO: Update copyright text.
 // </copyright>
 // -----------------------------------------------------------------------
@@ -9,21 +9,18 @@ namespace StyleCopMagic.LayoutRules
     using Roslyn.Compilers.CSharp;
     using Roslyn.Services;
 
-    public class SA1503 : SyntaxRewriter, IFixer
+    public class SA1503 : RuleRewriter
     {
-        private SyntaxTree src;
         private SemanticModel semanticModel;
 
-        public SA1503(SyntaxTree src, Compilation compilation, ISettings settings)
+        public SA1503(SemanticModel semanticModel)
         {
-            this.src = src;
-            this.semanticModel = compilation.GetSemanticModel(src);
+            this.semanticModel = semanticModel;
         }
 
-        public SyntaxTree Repair()
+        public override SyntaxNode Visit(SyntaxNode node)
         {
-            SyntaxNode result = Visit(src.GetRoot());
-            return SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result.Format().GetFormattedRoot());
+            return base.Visit(node);
         }
 
         private StatementSyntax WrapStatementWithBlock(StatementSyntax statement)
@@ -220,55 +217,6 @@ namespace StyleCopMagic.LayoutRules
                 return node;
             }
         }
-
-        //private static bool NeedsBraces(this DoStatementSyntax node)
-        //{
-        //    return node.Statement.Kind != SyntaxKind.Block;
-        //}
-
-        //private static bool NeedsBraces(this ForStatementSyntax node)
-        //{
-        //    return
-        //        !node.CloseParenToken.IsMissing &&
-        //        node.Statement.Kind != SyntaxKind.Block;
-        //}
-
-        //private static bool NeedsBraces(this ForEachStatementSyntax node)
-        //{
-        //    return
-        //        !node.CloseParenToken.IsMissing &&
-        //        node.Statement.Kind != SyntaxKind.Block;
-        //}
-
-        //private static bool NeedsBraces(this FixedStatementSyntax node)
-        //{
-        //    return
-        //        !node.CloseParenToken.IsMissing &&
-        //        node.Statement.Kind != SyntaxKind.Block;
-        //}
-
-        //private static bool NeedsBraces(this UsingStatementSyntax node)
-        //{
-        //    return
-        //        !node.CloseParenToken.IsMissing &&
-        //        node.Statement.Kind != SyntaxKind.Block &&
-        //        node.Statement.Kind != SyntaxKind.UsingStatement;
-        //}
-
-        //private static bool NeedsBraces(this LockStatementSyntax node)
-        //{
-        //    return
-        //        !node.CloseParenToken.IsMissing &&
-        //        node.Statement.Kind != SyntaxKind.Block &&
-        //        node.Statement.Kind != SyntaxKind.LockStatement;
-        //}
-
-        //private static bool NeedsBraces(this ElseClauseSyntax node)
-        //{
-        //    return
-        //        node.Statement.Kind != SyntaxKind.Block &&
-        //        node.Statement.Kind != SyntaxKind.IfStatement;
-        //}
     }
 }
 

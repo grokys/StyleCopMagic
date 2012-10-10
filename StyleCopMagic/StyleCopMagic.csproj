@@ -51,8 +51,8 @@
   <ItemGroup>
     <Compile Include="DocumentationRules\SA1633.cs" />
     <Compile Include="DocumentationRules\SA1642.cs" />
-    <Compile Include="IFixer.cs" />
-    <Compile Include="FixerFactory.cs" />
+    <Compile Include="RuleRewriter.cs" />
+    <Compile Include="RuleRewriterFactory.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="LayoutRules\SA1503.cs">
       <SubType>Code</SubType>

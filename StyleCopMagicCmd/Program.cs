@@ -66,23 +66,25 @@
                         {
                             Console.WriteLine(document.Name);
 
-                            foreach (Type type in fixers)
+                            foreach (Type type in rewriters)
                             {
-                                Compilation compilation = (Compilation)newProject.GetCompilation();
+                                SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
+                                SyntaxNode contents = tree.GetRoot();
 
                                 try
                                 {
-                                    SyntaxTree tree = (SyntaxTree)document.GetSyntaxTree();
-                                    IFixer fixer = FixerFactory.Create(type, tree, compilation, settings);
-                                    SyntaxTree newTree = fixer.Repair();
-                                    document = document.UpdateSyntaxRoot(newTree.GetRoot());
-                                    newProject = document.Project;
-                                    newSolution = newProject.Solution;
+                                    RuleRewriter fixer = RuleRewriterFactory.Create(type, settings, () =>
+                                        (SemanticModel)newProject.GetCompilation().GetSemanticModel(tree));
+                                    contents = fixer.Visit(contents);
                                 }
                                 catch (Exception e)
                                 {
                                     Console.WriteLine(e.Message);
                                 }
+
+                                document = document.UpdateSyntaxRoot(contents.Format().GetFormattedRoot());
+                                newProject = document.Project;
+                                newSolution = newProject.Solution;
                             }
                         }
                     }
@@ -93,6 +95,6 @@
         }
 
         static List<string> includeFiles;
-        static List<Type> fixers = new List<Type>(FixerFactory.EnumerateFixers());
+        static List<Type> rewriters = new List<Type>(RuleRewriterFactory.EnumerateRewriters());
     }
 }

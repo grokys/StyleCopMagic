@@ -8,26 +8,12 @@ namespace StyleCopMagic.OrderingRules
 {
     using System.Linq;
     using Roslyn.Compilers.CSharp;
-    using Roslyn.Services;
 
-    public class SA1200 : SyntaxRewriter, IFixer
+    public class SA1200 : RuleRewriter
     {
-        private SyntaxTree src;
-
-        public SA1200(SyntaxTree src, Compilation compilation, ISettings settings)
-        {
-            this.src = src;
-        }
-
-        public SyntaxTree Repair()
-        {
-            SyntaxNode result = Visit(src.GetRoot());
-            return SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result.Format().GetFormattedRoot());
-        }
-
         public override SyntaxNode Visit(SyntaxNode node)
         {
-            if (node == src.GetRoot())
+            if (node != null && node.Kind == SyntaxKind.CompilationUnit)
             {
                 UsingDirectiveSyntax[] usingNodes = node.ChildNodes().Where(x => x.Kind == SyntaxKind.UsingDirective).Cast<UsingDirectiveSyntax>().ToArray();
                 NamespaceDeclarationSyntax namespaceNode = (NamespaceDeclarationSyntax)node.ChildNodes().FirstOrDefault(x => x.Kind == SyntaxKind.NamespaceDeclaration);

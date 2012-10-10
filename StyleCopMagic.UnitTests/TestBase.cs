@@ -10,6 +10,7 @@ namespace StyleCopMagic.UnitTests
     using System.IO;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Roslyn.Compilers.CSharp;
+    using Roslyn.Services;
 
     public class TestBase
     {
@@ -25,15 +26,12 @@ namespace StyleCopMagic.UnitTests
         protected void Run(string test)
         {
             var src = Load(this.rule.Name, test);
-            var target = Create(src);
-            var result = target.Repair();
-            Compare(result, this.rule.Name, test);
-        }
-
-        private IFixer Create(SyntaxTree src)
-        {
+            ISettings settings = new MockSettings();
             Compilation compilation = Compilation.Create("test", syntaxTrees: new[] { src });
-            return FixerFactory.Create(rule, src, compilation, new MockSettings());
+            var target = RuleRewriterFactory.Create(this.rule, settings, () => compilation.GetSemanticModel(src));
+            var result = target.Visit(src.GetRoot());
+            var formattedResult = SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result.Format().GetFormattedRoot());
+            Compare(formattedResult, this.rule.Name, test);
         }
 
         private SyntaxTree Load(string rule, string test)

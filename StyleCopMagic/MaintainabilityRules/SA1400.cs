@@ -7,23 +7,9 @@
 namespace StyleCopMagic.MaintainabilityRules
 {
     using Roslyn.Compilers.CSharp;
-    using Roslyn.Services;
 
-    public class SA1400 : SyntaxRewriter, IFixer
+    public class SA1400 : RuleRewriter
     {
-        private SyntaxTree src;
-
-        public SA1400(SyntaxTree src, Compilation compilation, ISettings settings)
-        {
-            this.src = src;
-        }
-
-        public SyntaxTree Repair()
-        {
-            SyntaxNode result = Visit(src.GetRoot());
-            return SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result.Format().GetFormattedRoot());
-        }
-
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
             if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))

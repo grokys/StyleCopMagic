@@ -8,21 +8,8 @@ namespace StyleCopMagic.SpacingRules
 {
     using Roslyn.Compilers.CSharp;
 
-    public class SA1005 : SyntaxRewriter, IFixer
+    public class SA1005 : RuleRewriter
     {
-        private SyntaxTree src;
-
-        public SA1005(SyntaxTree src, Compilation compilation, ISettings settings)
-        {
-            this.src = src;
-        }
-
-        public SyntaxTree Repair()
-        {
-            SyntaxNode result = Visit(src.GetRoot());
-            return SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result);
-        }
-
         public override SyntaxTrivia VisitTrivia(SyntaxTrivia trivia)
         {
             if (NeedsSpaceAdding(trivia))

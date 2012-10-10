@@ -11,24 +11,18 @@ namespace StyleCopMagic.ReadabilityRules
     using Roslyn.Compilers;
     using Roslyn.Compilers.CSharp;
 
-    public class SA1101 : SyntaxRewriter, IFixer
+    public class SA1101 : RuleRewriter
     {
-        private SyntaxTree src;
         private SemanticModel semanticModel;
 
-        public SA1101(SyntaxTree src, Compilation compilation, ISettings settings)
+        public SA1101(SemanticModel semanticModel)
         {
-            this.src = src;
-            this.semanticModel = compilation.GetSemanticModel(src);
+            this.semanticModel = semanticModel;
         }
 
-        /// <summary>
-        /// Repairs SA1101 (PrefixLocalCallsWithThis) warnings.
-        /// </summary>
-        public SyntaxTree Repair()
+        public override SyntaxNode Visit(SyntaxNode node)
         {
-            SyntaxNode result = Visit(src.GetRoot());
-            return SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result);
+            return base.Visit(node);
         }
 
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
