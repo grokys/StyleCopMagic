@@ -13,6 +13,7 @@ namespace StyleCopMagic.OrderingRules
     {
         public override SyntaxNode Visit(SyntaxNode node)
         {
+            // TODO: For some reason a null can get passed in here. Check again with newer CTP than June 2012.
             if (node != null && node.Kind == SyntaxKind.CompilationUnit)
             {
                 UsingDirectiveSyntax[] usingNodes = node.ChildNodes().Where(x => x.Kind == SyntaxKind.UsingDirective).Cast<UsingDirectiveSyntax>().ToArray();

@@ -6,6 +6,8 @@
 
 namespace StyleCopMagic.MaintainabilityRules
 {
+    using System.Linq;
+    using System.Reflection;
     using Roslyn.Compilers.CSharp;
 
     public class SA1400 : RuleRewriter
@@ -26,7 +28,7 @@ namespace StyleCopMagic.MaintainabilityRules
         {
             if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))
             {
-                return node.AddModifiers(GetTypeDeclarationModifier(node));
+                return AddModifiers(node, GetTypeDeclarationModifier(node));
             }
             else
             {
@@ -38,7 +40,7 @@ namespace StyleCopMagic.MaintainabilityRules
         {
             if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))
             {
-                return node.AddModifiers(Syntax.Token(SyntaxKind.PrivateKeyword));
+                return AddModifiers(node, Syntax.Token(SyntaxKind.PrivateKeyword));
             }
             else
             {
@@ -50,7 +52,7 @@ namespace StyleCopMagic.MaintainabilityRules
         {
             if (node.Modifiers.Count == 0 && !IsInterfaceMember(node) && node.ExplicitInterfaceSpecifier == null)
             {
-                return node.AddModifiers(Syntax.Token(SyntaxKind.PrivateKeyword));
+                return AddModifiers(node, Syntax.Token(SyntaxKind.PrivateKeyword));
             }
             else
             {
@@ -62,7 +64,7 @@ namespace StyleCopMagic.MaintainabilityRules
         {
             if (node.Modifiers.Count == 0 && !IsInterfaceMember(node) && node.ExplicitInterfaceSpecifier == null)
             {
-                return node.AddModifiers(Syntax.Token(SyntaxKind.PrivateKeyword));
+                return AddModifiers(node, Syntax.Token(SyntaxKind.PrivateKeyword));
             }
             else
             {
@@ -74,7 +76,7 @@ namespace StyleCopMagic.MaintainabilityRules
         {
             if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))
             {
-                return node.AddModifiers(GetTypeDeclarationModifier(node));
+                return AddModifiers(node, GetTypeDeclarationModifier(node));
             }
             else
             {
@@ -86,7 +88,7 @@ namespace StyleCopMagic.MaintainabilityRules
         {
             if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))
             {
-                return node.AddModifiers(Syntax.Token(SyntaxKind.PublicKeyword));
+                return AddModifiers(node, Syntax.Token(SyntaxKind.PublicKeyword));
             }
             else
             {
@@ -107,6 +109,36 @@ namespace StyleCopMagic.MaintainabilityRules
                 x.Kind == SyntaxKind.StructDeclaration) != null;
             SyntaxKind modifier = nested ? SyntaxKind.PrivateKeyword : SyntaxKind.InternalKeyword;
             return Syntax.Token(modifier);
+        }
+
+        // TODO: Hopefully we can just use node.AddModifiers() in a later Roslyn version.
+        private SyntaxNode AddModifiers(SyntaxNode node, SyntaxToken syntaxToken)
+        {
+            // Get the first child node.
+            SyntaxNode firstNode = node.ChildNodes().FirstOrDefault();
+
+            if (firstNode != null)
+            {
+                // The leading trivia will be the method comments, if any.
+                SyntaxTriviaList leadingTrivia = firstNode.GetLeadingTrivia();
+
+                // Replace it with one without leading trivia.
+                node = node.ReplaceNodes(
+                    new[] { firstNode },
+                    (a, b) => firstNode.WithLeadingTrivia());
+
+                // Add the leading trivia to the new modifier.
+                syntaxToken = syntaxToken.WithLeadingTrivia(leadingTrivia);
+            }
+
+            // Use reflection to call the node.AddModifiers method. Ugh. Horrible.
+            MethodInfo addModifiers = node.GetType().GetMethod("AddModifiers");
+
+            return (SyntaxNode)addModifiers.Invoke(node,
+                new object[] 
+                { 
+                    new[] { syntaxToken }
+                });
         }
     }
 }

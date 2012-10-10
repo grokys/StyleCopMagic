@@ -94,5 +94,11 @@ namespace StyleCopMagic.UnitTests.MaintainabilityRules
         {
             Run("ExplicitInterfaceProperty");
         }
+
+        [TestMethod]
+        public void MethodWithComments()
+        {
+            Run("MethodWithComments");
+        }
     }
 }
