@@ -13,14 +13,18 @@ namespace StyleCopMagic.OrderingRules
 
     public class SA1201 : RuleRewriter
     {
-        private readonly SyntaxKind[] MemberDeclarationOrder = new[]
+        private readonly SyntaxKind[] DeclarationOrder = new[]
         {
+            SyntaxKind.ExternAliasDirective,
+            SyntaxKind.UsingDirective,
+            SyntaxKind.NamespaceDeclaration,
             SyntaxKind.FieldDeclaration,
             SyntaxKind.ConstructorDeclaration,
             SyntaxKind.DestructorDeclaration,
             SyntaxKind.DelegateDeclaration,
             SyntaxKind.EventFieldDeclaration,
             SyntaxKind.EnumDeclaration,
+            SyntaxKind.InterfaceDeclaration,
             SyntaxKind.PropertyDeclaration,
             SyntaxKind.IndexerDeclaration,
             SyntaxKind.MethodDeclaration,
@@ -33,7 +37,46 @@ namespace StyleCopMagic.OrderingRules
             // TODO: Need to handle whitespace better here, but holding out and hoping that comes
             // with a future Roslyn. I know whitespace handling is going to change in future 
             // anyway...
-            SyntaxKindComparer comparer = new SyntaxKindComparer(MemberDeclarationOrder);
+            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder);
+
+            var orderedMembers = node.Members
+                .OrderBy(x => x.Kind, comparer);
+
+            return node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+        }
+
+        public override SyntaxNode VisitStructDeclaration(StructDeclarationSyntax node)
+        {
+            // TODO: Need to handle whitespace better here, but holding out and hoping that comes
+            // with a future Roslyn. I know whitespace handling is going to change in future 
+            // anyway...
+            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder);
+
+            var orderedMembers = node.Members
+                .OrderBy(x => x.Kind, comparer);
+
+            return node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+        }
+
+        public override SyntaxNode VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
+        {
+            // TODO: Need to handle whitespace better here, but holding out and hoping that comes
+            // with a future Roslyn. I know whitespace handling is going to change in future 
+            // anyway...
+            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder);
+
+            var orderedMembers = node.Members
+                .OrderBy(x => x.Kind, comparer);
+
+            return node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+        }
+
+        public override SyntaxNode VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
+        {
+            // TODO: Need to handle whitespace better here, but holding out and hoping that comes
+            // with a future Roslyn. I know whitespace handling is going to change in future 
+            // anyway...
+            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder);
 
             var orderedMembers = node.Members
                 .OrderBy(x => x.Kind, comparer);

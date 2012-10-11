@@ -12,9 +12,27 @@ namespace StyleCopMagic.UnitTests.SpacingRules
         }
 
         [TestMethod]
-        public void ClassMembersRandomOrder()
+        public void ClassMembers()
         {
-            Run("ClassMembersRandomOrder");
+            Run("ClassMembers");
+        }
+
+        [TestMethod]
+        public void StructMembers()
+        {
+            Run("StructMembers");
+        }
+
+        [TestMethod]
+        public void InterfaceMembers()
+        {
+            Run("InterfaceMembers");
+        }
+
+        [TestMethod]
+        public void NamespaceMembers()
+        {
+            Run("NamespaceMembers");
         }
     }
 }
