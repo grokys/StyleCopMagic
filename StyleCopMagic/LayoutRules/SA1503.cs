@@ -18,11 +18,6 @@ namespace StyleCopMagic.LayoutRules
             this.semanticModel = semanticModel;
         }
 
-        public override SyntaxNode Visit(SyntaxNode node)
-        {
-            return base.Visit(node);
-        }
-
         private StatementSyntax WrapStatementWithBlock(StatementSyntax statement)
         {
             return Syntax.Block(

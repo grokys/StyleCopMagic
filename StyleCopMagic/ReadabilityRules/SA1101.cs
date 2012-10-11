@@ -20,11 +20,6 @@ namespace StyleCopMagic.ReadabilityRules
             this.semanticModel = semanticModel;
         }
 
-        public override SyntaxNode Visit(SyntaxNode node)
-        {
-            return base.Visit(node);
-        }
-
         public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
         {
             if (IsMember(node))

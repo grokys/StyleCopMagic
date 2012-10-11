@@ -18,11 +18,6 @@ namespace StyleCopMagic.DocumentationRules
             this.semanticModel = semanticModel;
         }
 
-        public override SyntaxNode Visit(SyntaxNode node)
-        {
-            return base.Visit(node);
-        }
-
         public override SyntaxNode VisitConstructorDeclaration(ConstructorDeclarationSyntax node)
         {
             SyntaxTriviaList existingTrivia = node.GetLeadingTrivia();

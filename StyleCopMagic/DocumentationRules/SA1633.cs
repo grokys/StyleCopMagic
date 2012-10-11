@@ -18,30 +18,23 @@ namespace StyleCopMagic.DocumentationRules
             this.settings = settings;
         }
 
-        public override SyntaxNode Visit(SyntaxNode node)
+        public override SyntaxNode VisitCompilationUnit(CompilationUnitSyntax node)
         {
-            if (node.Parent == null)
-            {
-                string comment = string.Format(
-                    "//-----------------------------------------------------------------------\n" +
-                    "// <copyright file=\"{0}\" company=\"{1}\">\n" +
-                    "// {2}\n" +
-                    "// </copyright>\n" +
-                    "//-----------------------------------------------------------------------\n" +
-                    "\n",
-                    Path.GetFileName(node.SyntaxTree.FilePath),
-                    this.settings.CompanyName,
-                    this.settings.Copyright);
+            string comment = string.Format(
+                "//-----------------------------------------------------------------------\n" +
+                "// <copyright file=\"{0}\" company=\"{1}\">\n" +
+                "// {2}\n" +
+                "// </copyright>\n" +
+                "//-----------------------------------------------------------------------\n" +
+                "\n",
+                Path.GetFileName(node.SyntaxTree.FilePath),
+                this.settings.CompanyName,
+                this.settings.Copyright);
 
-                // TODO: figure out how to do this properly.
-                comment = comment.Replace("\n", "\r\n");
+            // TODO: figure out how to do this properly.
+            comment = comment.Replace("\n", "\r\n");
 
-                return node.WithLeadingTrivia(Syntax.ParseLeadingTrivia(comment));
-            }
-            else
-            {
-                return base.Visit(node);
-            }
+            return node.WithLeadingTrivia(Syntax.ParseLeadingTrivia(comment));
         }
     }
 }
