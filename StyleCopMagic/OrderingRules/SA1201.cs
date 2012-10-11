@@ -42,7 +42,9 @@ namespace StyleCopMagic.OrderingRules
             var orderedMembers = node.Members
                 .OrderBy(x => x.Kind, comparer);
 
-            return node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+            node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+
+            return base.VisitClassDeclaration(node);
         }
 
         public override SyntaxNode VisitStructDeclaration(StructDeclarationSyntax node)
@@ -55,7 +57,9 @@ namespace StyleCopMagic.OrderingRules
             var orderedMembers = node.Members
                 .OrderBy(x => x.Kind, comparer);
 
-            return node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+            node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+
+            return base.VisitStructDeclaration(node);
         }
 
         public override SyntaxNode VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
@@ -68,7 +72,9 @@ namespace StyleCopMagic.OrderingRules
             var orderedMembers = node.Members
                 .OrderBy(x => x.Kind, comparer);
 
-            return node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+            node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+
+            return base.VisitInterfaceDeclaration(node);
         }
 
         public override SyntaxNode VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
@@ -81,7 +87,9 @@ namespace StyleCopMagic.OrderingRules
             var orderedMembers = node.Members
                 .OrderBy(x => x.Kind, comparer);
 
-            return node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+            node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+
+            return base.VisitNamespaceDeclaration(node);
         }
 
         private class SyntaxKindComparer : IComparer<SyntaxKind>
