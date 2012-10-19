@@ -1,6 +1,6 @@
 ﻿// -----------------------------------------------------------------------
 // <copyright file="IFixerExtensions.cs" company="">
-// TODO: Update copyright text.
+// BSD Licence
 // </copyright>
 // -----------------------------------------------------------------------
 
