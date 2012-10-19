@@ -11,7 +11,7 @@ namespace StyleCopMagic.OrderingRules
     using System.Linq;
     using Roslyn.Compilers.CSharp;
 
-    public class SA1201 : RuleRewriter
+    public class SA1201_SA1202 : RuleRewriter
     {
         private readonly SyntaxKind[] DeclarationOrder = new[]
         {
@@ -32,15 +32,23 @@ namespace StyleCopMagic.OrderingRules
             SyntaxKind.ClassDeclaration,
         };
 
+        private readonly SyntaxKind[][] AccessLevelOrder = new[]
+        {
+            new[] { SyntaxKind.PublicKeyword },
+            new[] { SyntaxKind.InternalKeyword },
+            new[] { SyntaxKind.InternalKeyword, SyntaxKind.ProtectedKeyword },
+            new[] { SyntaxKind.ProtectedKeyword },
+            new[] { SyntaxKind.PrivateKeyword },
+        };
+
         public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
         {
             // TODO: Need to handle whitespace better here, but holding out and hoping that comes
             // with a future Roslyn. I know whitespace handling is going to change in future 
             // anyway...
-            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder);
+            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
 
-            var orderedMembers = node.Members
-                .OrderBy(x => x.Kind, comparer);
+            var orderedMembers = node.Members.OrderBy(x => x, comparer);
 
             node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
 
@@ -52,10 +60,9 @@ namespace StyleCopMagic.OrderingRules
             // TODO: Need to handle whitespace better here, but holding out and hoping that comes
             // with a future Roslyn. I know whitespace handling is going to change in future 
             // anyway...
-            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder);
+            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
 
-            var orderedMembers = node.Members
-                .OrderBy(x => x.Kind, comparer);
+            var orderedMembers = node.Members.OrderBy(x => x, comparer);
 
             node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
 
@@ -67,10 +74,9 @@ namespace StyleCopMagic.OrderingRules
             // TODO: Need to handle whitespace better here, but holding out and hoping that comes
             // with a future Roslyn. I know whitespace handling is going to change in future 
             // anyway...
-            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder);
+            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
 
-            var orderedMembers = node.Members
-                .OrderBy(x => x.Kind, comparer);
+            var orderedMembers = node.Members.OrderBy(x => x, comparer);
 
             node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
 
@@ -82,28 +88,51 @@ namespace StyleCopMagic.OrderingRules
             // TODO: Need to handle whitespace better here, but holding out and hoping that comes
             // with a future Roslyn. I know whitespace handling is going to change in future 
             // anyway...
-            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder);
+            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
 
-            var orderedMembers = node.Members
-                .OrderBy(x => x.Kind, comparer);
+            var orderedMembers = node.Members.OrderBy(x => x, comparer);
 
             node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
 
             return base.VisitNamespaceDeclaration(node);
         }
 
-        private class SyntaxKindComparer : IComparer<SyntaxKind>
+        private class SyntaxKindComparer : IComparer<MemberDeclarationSyntax>
         {
-            private SyntaxKind[] order;
+            private SyntaxKind[] declarationOrder;
+            private SyntaxKind[][] accessLevelOrder;
 
-            public SyntaxKindComparer(SyntaxKind[] order)
+            public SyntaxKindComparer(SyntaxKind[] declarationOrder, SyntaxKind[][] accessLevelOrder)
             {
-                this.order = order;
+                this.declarationOrder = declarationOrder;
+                this.accessLevelOrder = accessLevelOrder;
             }
 
-            public int Compare(SyntaxKind x, SyntaxKind y)
+            public int Compare(MemberDeclarationSyntax x, MemberDeclarationSyntax y)
             {
-                return Array.IndexOf(this.order, x) - Array.IndexOf(this.order, y);
+                int declX = Array.IndexOf(this.declarationOrder, x.Kind);
+                int declY = Array.IndexOf(this.declarationOrder, y.Kind);
+
+                if (declX == declY)
+                {
+                    declX = IndexOf(this.accessLevelOrder, x.GetModifiers());
+                    declY = IndexOf(this.accessLevelOrder, y.GetModifiers());
+                }
+
+                return declX - declY;
+            }
+
+            private int IndexOf(SyntaxKind[][] array, SyntaxTokenList syntaxTokenList)
+            {
+                for (int i = 0; i < array.Length; ++i)
+                {
+                    if (array[i].SequenceEqual(syntaxTokenList.Select(x => x.Kind).OrderBy(x => x)))
+                    {
+                        return i;
+                    }
+                }
+
+                return -1;
             }
         }
     }

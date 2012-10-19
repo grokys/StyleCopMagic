@@ -7,7 +7,6 @@
 namespace StyleCopMagic.MaintainabilityRules
 {
     using System.Linq;
-    using System.Reflection;
     using Roslyn.Compilers.CSharp;
 
     public class SA1400 : RuleRewriter
@@ -111,7 +110,6 @@ namespace StyleCopMagic.MaintainabilityRules
             return Syntax.Token(modifier);
         }
 
-        // TODO: Hopefully we can just use node.AddModifiers() in a later Roslyn version.
         private SyntaxNode AddModifiers(SyntaxNode node, SyntaxToken syntaxToken)
         {
             // Get the first child node.
@@ -131,14 +129,7 @@ namespace StyleCopMagic.MaintainabilityRules
                 syntaxToken = syntaxToken.WithLeadingTrivia(leadingTrivia);
             }
 
-            // Use reflection to call the node.AddModifiers method. Ugh. Horrible.
-            MethodInfo addModifiers = node.GetType().GetMethod("AddModifiers");
-
-            return (SyntaxNode)addModifiers.Invoke(node,
-                new object[] 
-                { 
-                    new[] { syntaxToken }
-                });
+            return node.AddModifiers(syntaxToken);
         }
     }
 }
