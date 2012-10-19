@@ -45,8 +45,8 @@ namespace StyleCopMagic.DocumentationRules
 
         private bool HasDocumentationComment(SyntaxTriviaList existingTrivia)
         {
-            return existingTrivia.Any(SyntaxKind.DocumentationComment) ||
-                   existingTrivia.Any(x => x.GetText().IndexOf("<summary>") != -1);
+            return existingTrivia.Any(SyntaxKind.DocumentationCommentTrivia) ||
+                   existingTrivia.Any(x => x.ToFullString().IndexOf("<summary>") != -1);
         }
     }
 }

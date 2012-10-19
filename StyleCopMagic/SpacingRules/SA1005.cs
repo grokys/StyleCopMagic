@@ -14,7 +14,7 @@ namespace StyleCopMagic.SpacingRules
         {
             if (NeedsSpaceAdding(trivia))
             {
-                var text = trivia.GetText();
+                var text = trivia.ToFullString();
                 text = text.Substring(0, 2) + " " + text.Substring(2).TrimStart();
                 var triviaList = Syntax.ParseLeadingTrivia(text);
 
@@ -34,7 +34,7 @@ namespace StyleCopMagic.SpacingRules
                 return false;
             }
 
-            var text = trivia.GetText();
+            var text = trivia.ToFullString();
 
             if (!text.StartsWith("//"))
             {

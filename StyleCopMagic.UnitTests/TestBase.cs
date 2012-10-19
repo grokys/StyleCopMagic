@@ -11,6 +11,7 @@ namespace StyleCopMagic.UnitTests
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Roslyn.Compilers.CSharp;
     using Roslyn.Services;
+    using Roslyn.Services.Formatting;
 
     public class TestBase
     {
@@ -30,15 +31,14 @@ namespace StyleCopMagic.UnitTests
             Compilation compilation = Compilation.Create("test", syntaxTrees: new[] { src });
             var target = RuleRewriterFactory.Create(this.rule, settings, () => compilation.GetSemanticModel(src));
             var result = target.Visit(src.GetRoot());
-            var formattedResult = SyntaxTree.Create(src.FilePath, (CompilationUnitSyntax)result.Format().GetFormattedRoot());
+            var formattedResult = SyntaxTree.Create((CompilationUnitSyntax)result.Format(FormattingOptions.GetDefaultOptions()).GetFormattedRoot(), src.FilePath);
             Compare(formattedResult, this.rule.Name, test);
         }
 
         private SyntaxTree Load(string rule, string test)
         {
             string path = Path.Combine(TestFilePath, rule, test + ".src.cs");
-            string file = File.ReadAllText(path);
-            return SyntaxTree.ParseCompilationUnit(file, path);
+            return SyntaxTree.ParseFile(path);
         }
 
         private void Compare(SyntaxTree src, string rule, string test)
@@ -46,7 +46,7 @@ namespace StyleCopMagic.UnitTests
             string expectedPath = Path.Combine(TestFilePath, rule, test + ".expected.cs");
             string actualPath = Path.Combine(TestFilePath, rule, test + ".actual.cs");
             string expected = File.ReadAllText(expectedPath);
-            string actual = src.GetText().GetText();
+            string actual = src.GetText().ToString();
 
             File.WriteAllText(actualPath, actual);
 

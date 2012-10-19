@@ -1,16 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCopMagic", "StyleCopMagic\StyleCopMagic.csproj", "{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCopMagic.UnitTests", "StyleCopMagic.UnitTests\StyleCopMagic.UnitTests.csproj", "{8E692744-E87E-444E-8CFE-23304961E27E}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{09A44A83-9298-41AE-BFFE-5F2A2CB279E2}"
-	ProjectSection(SolutionItems) = preProject
-		Local.testsettings = Local.testsettings
-		StyleCopMagic.vsmdi = StyleCopMagic.vsmdi
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCopMagicCmd", "StyleCopMagicCmd\StyleCopMagicCmd.csproj", "{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}"
 EndProject
@@ -20,43 +13,19 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|Mixed Platforms = Debug|Mixed Platforms
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|Mixed Platforms = Release|Mixed Platforms
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Debug|x86.ActiveCfg = Debug|x86
-		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Debug|x86.Build.0 = Debug|x86
+		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Release|Any CPU.ActiveCfg = Release|x86
-		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Release|Mixed Platforms.Build.0 = Release|x86
-		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Release|x86.ActiveCfg = Release|x86
-		{6B061ACD-5DD8-4136-82A4-0A37795BC3EA}.Release|x86.Build.0 = Release|x86
 		{8E692744-E87E-444E-8CFE-23304961E27E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8E692744-E87E-444E-8CFE-23304961E27E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8E692744-E87E-444E-8CFE-23304961E27E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{8E692744-E87E-444E-8CFE-23304961E27E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{8E692744-E87E-444E-8CFE-23304961E27E}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{8E692744-E87E-444E-8CFE-23304961E27E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E692744-E87E-444E-8CFE-23304961E27E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8E692744-E87E-444E-8CFE-23304961E27E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{8E692744-E87E-444E-8CFE-23304961E27E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{8E692744-E87E-444E-8CFE-23304961E27E}.Release|x86.ActiveCfg = Release|Any CPU
-		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Debug|x86.ActiveCfg = Debug|x86
-		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Debug|x86.Build.0 = Debug|x86
+		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Release|Any CPU.ActiveCfg = Release|x86
-		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Release|Mixed Platforms.Build.0 = Release|x86
-		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Release|x86.ActiveCfg = Release|x86
-		{132DAB52-2A2D-490F-8C6D-E5B0EB0B7D51}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

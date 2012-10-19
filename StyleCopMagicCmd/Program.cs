@@ -8,6 +8,7 @@
     using Roslyn.Compilers.CSharp;
     using Roslyn.Services;
     using StyleCopMagic;
+    using Roslyn.Services.Formatting;
 
     class Program
     {
@@ -82,7 +83,7 @@
                                     Console.WriteLine(e.Message);
                                 }
 
-                                document = document.UpdateSyntaxRoot(contents.Format().GetFormattedRoot());
+                                document = document.UpdateSyntaxRoot(contents.Format(FormattingOptions.GetDefaultOptions()).GetFormattedRoot());
                                 newProject = document.Project;
                                 newSolution = newProject.Solution;
                             }
