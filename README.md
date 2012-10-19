@@ -13,7 +13,7 @@ Running StyleCopMagic
 
 Currently the only way to run StyleCopMagic is through the commandline StyleCopMagicCmd:
 
-  StyleCopMagicCmd.exe ProjectFile [Filename1.cs] ... [FilenameN.cs]
+    StyleCopMagicCmd.exe ProjectFile [Filename1.cs] ... [FilenameN.cs]
 
 ProjectFile may be a .csproj or .sln file.
 
