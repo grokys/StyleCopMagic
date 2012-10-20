@@ -9,16 +9,28 @@ namespace StyleCopMagic
     using System.Reflection;
     using Roslyn.Compilers.CSharp;
 
+    // TODO: Is there a better way to do this than using reflection?
     public static class RoslynExtensions
     {
-        // TODO: Is there a better way to do this than using reflection?
+        public static SyntaxList<MemberDeclarationSyntax> GetMembers(this SyntaxNode node)
+        {
+            PropertyInfo modifiers = node.GetType().GetProperty("Members");
+            return (SyntaxList<MemberDeclarationSyntax>)modifiers.GetValue(node, null);
+        }
+
+        public static SyntaxNode WithMembers(this SyntaxNode node, SyntaxList<MemberDeclarationSyntax> members)
+        {
+            MethodInfo method = node.GetType().GetMethod("WithMembers");
+            return (SyntaxNode)method.Invoke(node, new object[] { members });
+        }
+
         public static SyntaxTokenList GetModifiers(this SyntaxNode node)
         {
-            PropertyInfo modifiers = node.GetType().GetProperty("Modifiers");
+            PropertyInfo property = node.GetType().GetProperty("Modifiers");
             
-            if (modifiers != null)
+            if (property != null)
             {
-                return (SyntaxTokenList)modifiers.GetValue(node, null);
+                return (SyntaxTokenList)property.GetValue(node, null);
             }
             else
             {
@@ -26,11 +38,10 @@ namespace StyleCopMagic
             }
         }
 
-        // TODO: Is there a better way to do this than using reflection?
         public static SyntaxNode AddModifiers(this SyntaxNode node, params SyntaxToken[] syntaxTokens)
         {
-            MethodInfo addModifiers = node.GetType().GetMethod("AddModifiers");
-            return (SyntaxNode)addModifiers.Invoke(node, new[] { syntaxTokens });
+            MethodInfo member = node.GetType().GetMethod("AddModifiers");
+            return (SyntaxNode)member.Invoke(node, new[] { syntaxTokens });
         }
     }
 }

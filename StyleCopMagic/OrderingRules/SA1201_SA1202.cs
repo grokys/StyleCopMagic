@@ -41,60 +41,25 @@ namespace StyleCopMagic.OrderingRules
             new[] { SyntaxKind.PrivateKeyword },
         };
 
-        public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
+        public override SyntaxNode Visit(SyntaxNode node)
         {
-            // TODO: Need to handle whitespace better here, but holding out and hoping that comes
-            // with a future Roslyn. I know whitespace handling is going to change in future 
-            // anyway...
-            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
+            // TODO: Why does a null sometimes get passed here?
+            if (node != null)
+            {
+                switch (node.Kind)
+                {
+                    case SyntaxKind.ClassDeclaration:
+                    case SyntaxKind.StructDeclaration:
+                    case SyntaxKind.InterfaceDeclaration:
+                    case SyntaxKind.NamespaceDeclaration:
+                        SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
+                        var orderedMembers = node.GetMembers().OrderBy(x => x, comparer);
+                        node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
+                        break;
+                }
+            }
 
-            var orderedMembers = node.Members.OrderBy(x => x, comparer);
-
-            node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
-
-            return base.VisitClassDeclaration(node);
-        }
-
-        public override SyntaxNode VisitStructDeclaration(StructDeclarationSyntax node)
-        {
-            // TODO: Need to handle whitespace better here, but holding out and hoping that comes
-            // with a future Roslyn. I know whitespace handling is going to change in future 
-            // anyway...
-            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
-
-            var orderedMembers = node.Members.OrderBy(x => x, comparer);
-
-            node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
-
-            return base.VisitStructDeclaration(node);
-        }
-
-        public override SyntaxNode VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
-        {
-            // TODO: Need to handle whitespace better here, but holding out and hoping that comes
-            // with a future Roslyn. I know whitespace handling is going to change in future 
-            // anyway...
-            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
-
-            var orderedMembers = node.Members.OrderBy(x => x, comparer);
-
-            node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
-
-            return base.VisitInterfaceDeclaration(node);
-        }
-
-        public override SyntaxNode VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
-        {
-            // TODO: Need to handle whitespace better here, but holding out and hoping that comes
-            // with a future Roslyn. I know whitespace handling is going to change in future 
-            // anyway...
-            SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
-
-            var orderedMembers = node.Members.OrderBy(x => x, comparer);
-
-            node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
-
-            return base.VisitNamespaceDeclaration(node);
+            return base.Visit(node);
         }
 
         private class SyntaxKindComparer : IComparer<MemberDeclarationSyntax>
