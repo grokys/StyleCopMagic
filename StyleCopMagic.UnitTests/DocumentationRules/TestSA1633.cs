@@ -16,5 +16,17 @@ namespace StyleCopMagic.UnitTests.DocumentationRules
         {
             Run("NoFileComment");
         }
+
+        [TestMethod]
+        public void ExistingFileComment()
+        {
+            Run("ExistingFileComment");
+        }
+
+        [TestMethod]
+        public void FileWithInitialRegion()
+        {
+            Run("FileWithInitialRegion");
+        }
     }
 }

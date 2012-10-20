@@ -7,6 +7,7 @@
 namespace StyleCopMagic.DocumentationRules
 {
     using System.IO;
+    using System.Linq;
     using Roslyn.Compilers.CSharp;
 
     public class SA1633 : RuleRewriter
@@ -29,12 +30,17 @@ namespace StyleCopMagic.DocumentationRules
                 "\n",
                 Path.GetFileName(node.SyntaxTree.FilePath),
                 this.settings.CompanyName,
-                this.settings.Copyright);
+                this.settings.Copyright.Replace("\n", "\n// "));
 
             // TODO: figure out how to do this properly.
             comment = comment.Replace("\n", "\r\n");
 
-            return node.WithLeadingTrivia(Syntax.ParseLeadingTrivia(comment));
+            SyntaxTriviaList commentTrivia = Syntax.ParseLeadingTrivia(comment);
+            var preservedTrivia = node.GetLeadingTrivia().SkipWhile(x => 
+                x.Kind == SyntaxKind.SingleLineCommentTrivia ||
+                x.Kind == SyntaxKind.EndOfLineTrivia);
+
+            return node.WithLeadingTrivia(commentTrivia.Concat(preservedTrivia));
         }
     }
 }
