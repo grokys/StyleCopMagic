@@ -28,5 +28,11 @@ namespace StyleCopMagic.UnitTests.SpacingRules
         {
             Run("WithFileComment");
         }
+
+        [TestMethod]
+        public void RegionAroundUsings()
+        {
+            Run("RegionAroundUsings");
+        }
     }
 }
