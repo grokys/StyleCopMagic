@@ -42,9 +42,12 @@ namespace StyleCopMagic.OrderingRules
 
                 usingNodes[usingNodes.Length - 1] = usingNodes.Last().WithTrailingTrivia(trailingTrivia);
 
+                // Add any using directives already on the namespace.
+                var namespaceUsings = usingNodes.Concat(namespaceNode.Usings);
+
                 // Create a new namespace statment with the usings and the leading trivia we removed earlier.
                 SyntaxNode newNamespaceNode = namespaceNode
-                    .WithUsings(Syntax.List<UsingDirectiveSyntax>(usingNodes))
+                    .WithUsings(Syntax.List<UsingDirectiveSyntax>(namespaceUsings))
                     .WithLeadingTrivia(namespaceTrivia);
 
                 // Replace the namespace with the one with usings.

@@ -34,5 +34,11 @@ namespace StyleCopMagic.UnitTests.SpacingRules
         {
             Run("RegionAroundUsings");
         }
+
+        [TestMethod]
+        public void UsingsOutsideAndInsideNamespace()
+        {
+            Run("UsingsOutsideAndInsideNamespace");
+        }
     }
 }
