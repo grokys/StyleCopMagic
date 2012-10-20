@@ -63,6 +63,7 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RuleRewriterTest.cs" />
     <Compile Include="DocumentationRules\TestSA1633.cs" />
     <Compile Include="DocumentationRules\TestSA1642.cs" />
     <Compile Include="LayoutRules\TestSA1503.cs" />
