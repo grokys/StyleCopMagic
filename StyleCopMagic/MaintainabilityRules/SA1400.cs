@@ -11,88 +11,39 @@ namespace StyleCopMagic.MaintainabilityRules
 
     public class SA1400 : RuleRewriter
     {
-        public override SyntaxNode VisitClassDeclaration(ClassDeclarationSyntax node)
+        public override SyntaxNode Visit(SyntaxNode node)
         {
-            if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))
+            if (node != null)
             {
-                return node.AddModifiers(GetTypeDeclarationModifier(node));
+                switch (node.Kind)
+                {
+                    case SyntaxKind.ClassDeclaration:
+                    case SyntaxKind.EnumDeclaration:
+                    case SyntaxKind.FieldDeclaration:
+                    case SyntaxKind.MethodDeclaration:
+                    case SyntaxKind.PropertyDeclaration:
+                    case SyntaxKind.StructDeclaration:
+                    case SyntaxKind.InterfaceDeclaration:
+                        if (!HasAccessModifiers(node) && 
+                            !IsInterfaceMember(node) && 
+                            node.GetExplicitInterfaceSpecifier() == null)
+                        {
+                            node = AddModifiers(node, GetTypeDeclarationModifier(node));
+                        }
+                        break;
+                }
             }
-            else
-            {
-                return base.VisitClassDeclaration(node);
-            }
+
+            return base.Visit(node);
         }
 
-        public override SyntaxNode VisitEnumDeclaration(EnumDeclarationSyntax node)
+        private bool HasAccessModifiers(SyntaxNode node)
         {
-            if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))
-            {
-                return AddModifiers(node, GetTypeDeclarationModifier(node));
-            }
-            else
-            {
-                return base.VisitEnumDeclaration(node);
-            }
-        }
-
-        public override SyntaxNode VisitFieldDeclaration(FieldDeclarationSyntax node)
-        {
-            if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))
-            {
-                return AddModifiers(node, Syntax.Token(SyntaxKind.PrivateKeyword));
-            }
-            else
-            {
-                return base.VisitFieldDeclaration(node);
-            }
-        }
-
-        public override SyntaxNode VisitMethodDeclaration(MethodDeclarationSyntax node)
-        {
-            if (node.Modifiers.Count == 0 && !IsInterfaceMember(node) && node.ExplicitInterfaceSpecifier == null)
-            {
-                return AddModifiers(node, Syntax.Token(SyntaxKind.PrivateKeyword));
-            }
-            else
-            {
-                return base.VisitMethodDeclaration(node);
-            }
-        }
-
-        public override SyntaxNode VisitPropertyDeclaration(PropertyDeclarationSyntax node)
-        {
-            if (node.Modifiers.Count == 0 && !IsInterfaceMember(node) && node.ExplicitInterfaceSpecifier == null)
-            {
-                return AddModifiers(node, Syntax.Token(SyntaxKind.PrivateKeyword));
-            }
-            else
-            {
-                return base.VisitPropertyDeclaration(node);
-            }
-        }
-
-        public override SyntaxNode VisitStructDeclaration(StructDeclarationSyntax node)
-        {
-            if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))
-            {
-                return AddModifiers(node, GetTypeDeclarationModifier(node));
-            }
-            else
-            {
-                return base.VisitStructDeclaration(node);
-            }
-        }
-
-        public override SyntaxNode VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
-        {
-            if (node.Modifiers.Count == 0 && !IsInterfaceMember(node))
-            {
-                return AddModifiers(node, Syntax.Token(SyntaxKind.PublicKeyword));
-            }
-            else
-            {
-                return base.VisitInterfaceDeclaration(node);
-            }
+            return node.GetModifiers().Any(x =>
+                x.Kind == SyntaxKind.PublicKeyword ||
+                x.Kind == SyntaxKind.ProtectedKeyword ||
+                x.Kind == SyntaxKind.InternalKeyword ||
+                x.Kind == SyntaxKind.PrivateKeyword);
         }
 
         private bool IsInterfaceMember(SyntaxNode node)
@@ -103,11 +54,24 @@ namespace StyleCopMagic.MaintainabilityRules
 
         private SyntaxToken GetTypeDeclarationModifier(SyntaxNode node)
         {
-            bool nested = node.Parent.FirstAncestorOrSelf<TypeDeclarationSyntax>(x =>
-                x.Kind == SyntaxKind.ClassDeclaration ||
-                x.Kind == SyntaxKind.StructDeclaration) != null;
-            SyntaxKind modifier = nested ? SyntaxKind.PrivateKeyword : SyntaxKind.InternalKeyword;
-            return Syntax.Token(modifier);
+            if (node is InterfaceDeclarationSyntax)
+            {
+                return Syntax.Token(SyntaxKind.PublicKeyword);
+            }
+            else if (node is ClassDeclarationSyntax ||
+                     node is EnumDeclarationSyntax ||
+                     node is StructDeclarationSyntax)
+            {
+                bool nested = node.Parent.FirstAncestorOrSelf<TypeDeclarationSyntax>(x =>
+                    x.Kind == SyntaxKind.ClassDeclaration ||
+                    x.Kind == SyntaxKind.StructDeclaration) != null;
+                SyntaxKind modifier = nested ? SyntaxKind.PrivateKeyword : SyntaxKind.InternalKeyword;
+                return Syntax.Token(modifier);
+            }
+            else
+            {
+                return Syntax.Token(SyntaxKind.PrivateKeyword);
+            }
         }
 
         private SyntaxNode AddModifiers(SyntaxNode node, SyntaxToken syntaxToken)

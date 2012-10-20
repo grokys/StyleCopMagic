@@ -43,5 +43,19 @@ namespace StyleCopMagic
             MethodInfo member = node.GetType().GetMethod("AddModifiers");
             return (SyntaxNode)member.Invoke(node, new[] { syntaxTokens });
         }
+
+        public static ExplicitInterfaceSpecifierSyntax GetExplicitInterfaceSpecifier(this SyntaxNode node)
+        {
+            PropertyInfo property = node.GetType().GetProperty("ExplicitInterfaceSpecifier");
+
+            if (property != null)
+            {
+                return (ExplicitInterfaceSpecifierSyntax)property.GetValue(node, null);
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
 }

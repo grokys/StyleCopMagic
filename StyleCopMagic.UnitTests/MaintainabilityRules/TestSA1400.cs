@@ -72,6 +72,12 @@ namespace StyleCopMagic.UnitTests.MaintainabilityRules
         }
 
         [TestMethod]
+        public void ConstWithoutPrivate()
+        {
+            Run("ConstWithoutPrivate");
+        }
+
+        [TestMethod]
         public void MethodInInterface()
         {
             Run("MethodInInterface");

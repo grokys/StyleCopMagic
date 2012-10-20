@@ -78,19 +78,18 @@
                                     {
                                         RuleRewriter fixer = RuleRewriterFactory.Create(type, settings, () =>
                                             (SemanticModel)newProject.GetCompilation().GetSemanticModel(tree));
-                                        fixer.Visit(contents);
+                                        contents = fixer.Visit(contents);
+                                        document = document.UpdateSyntaxRoot(contents.Format(FormattingOptions.GetDefaultOptions()).GetFormattedRoot());
+                                        newProject = document.Project;
+                                        newSolution = newProject.Solution;
+
+                                        tree = (SyntaxTree)document.GetSyntaxTree();
+                                        contents = tree.GetRoot();
                                     }
                                     catch (Exception e)
                                     {
                                         Console.WriteLine(e.Message);
                                     }
-
-                                    document = document.UpdateSyntaxRoot(contents.Format(FormattingOptions.GetDefaultOptions()).GetFormattedRoot());
-                                    newProject = document.Project;
-                                    newSolution = newProject.Solution;
-
-                                    tree = (SyntaxTree)document.GetSyntaxTree();
-                                    contents = tree.GetRoot();
                                 }
                             }
                         }
