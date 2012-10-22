@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="DocumentationRules\SA1633.cs" />
     <Compile Include="DocumentationRules\SA1642.cs" />
+    <Compile Include="OrderingRules\SA1203.cs" />
     <Compile Include="OrderingRules\SA1201_SA1202.cs" />
     <Compile Include="RoslynExtensions.cs" />
     <Compile Include="RuleRewriter.cs" />

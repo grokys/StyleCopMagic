@@ -40,5 +40,11 @@ namespace StyleCopMagic.UnitTests.OrderingRules
         {
             Run("SA1202_ClassMethods");
         }
+
+        [TestMethod]
+        public void SA1202_SA1202_ClassMembersInsideIf()
+        {
+            Run("SA1202_SA1202_ClassMembersInsideIf");
+        }
     }
 }

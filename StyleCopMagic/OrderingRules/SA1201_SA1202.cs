@@ -52,7 +52,7 @@ namespace StyleCopMagic.OrderingRules
                     case SyntaxKind.StructDeclaration:
                     case SyntaxKind.InterfaceDeclaration:
                     case SyntaxKind.NamespaceDeclaration:
-                        SyntaxKindComparer comparer = new SyntaxKindComparer(DeclarationOrder, AccessLevelOrder);
+                        MemberComparer comparer = new MemberComparer(DeclarationOrder, AccessLevelOrder);
                         var orderedMembers = node.GetMembers().OrderBy(x => x, comparer);
                         node = node.WithMembers(Syntax.List<MemberDeclarationSyntax>(orderedMembers));
                         break;
@@ -62,12 +62,12 @@ namespace StyleCopMagic.OrderingRules
             return base.Visit(node);
         }
 
-        private class SyntaxKindComparer : IComparer<MemberDeclarationSyntax>
+        private class MemberComparer : IComparer<MemberDeclarationSyntax>
         {
             private SyntaxKind[] declarationOrder;
             private SyntaxKind[][] accessLevelOrder;
 
-            public SyntaxKindComparer(SyntaxKind[] declarationOrder, SyntaxKind[][] accessLevelOrder)
+            public MemberComparer(SyntaxKind[] declarationOrder, SyntaxKind[][] accessLevelOrder)
             {
                 this.declarationOrder = declarationOrder;
                 this.accessLevelOrder = accessLevelOrder;
