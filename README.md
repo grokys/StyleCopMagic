@@ -22,15 +22,16 @@ If no filenames are specified then all files in the project/solution will be pro
 Supported Rules
 ---------------
 
-SA1005
-SA1101
-SA1200
-SA1201
-SA1202
-SA1400
-SA1503
-SA1633
-SA1642
+- SA1005
+- SA1101
+- SA1200
+- SA1201
+- SA1202
+- SA1203
+- SA1400
+- SA1503
+- SA1633
+- SA1642
 
 Project Status
 --------------
