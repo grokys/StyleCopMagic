@@ -28,6 +28,8 @@ namespace StyleCopMagic.OrderingRules
             SyntaxKind.PropertyDeclaration,
             SyntaxKind.IndexerDeclaration,
             SyntaxKind.MethodDeclaration,
+            SyntaxKind.OperatorDeclaration,
+            SyntaxKind.ConversionOperatorDeclaration,
             SyntaxKind.StructDeclaration,
             SyntaxKind.ClassDeclaration,
         };
