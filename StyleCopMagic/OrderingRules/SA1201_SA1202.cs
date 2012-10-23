@@ -91,7 +91,7 @@ namespace StyleCopMagic.OrderingRules
             {
                 for (int i = 0; i < array.Length; ++i)
                 {
-                    if (array[i].SequenceEqual(syntaxTokenList.Select(x => x.Kind).OrderBy(x => x)))
+                    if (array[i].Intersect(syntaxTokenList.Select(x => x.Kind).OrderBy(x => x)).Count() == array[i].Length)
                     {
                         return i;
                     }

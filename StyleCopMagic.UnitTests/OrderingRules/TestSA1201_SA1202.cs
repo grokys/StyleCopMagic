@@ -36,6 +36,12 @@ namespace StyleCopMagic.UnitTests.OrderingRules
         }
 
         [TestMethod]
+        public void SA1201_StaticMember()
+        {
+            Run("SA1201_StaticMember");
+        }
+
+        [TestMethod]
         public void SA1202_ClassMethods()
         {
             Run("SA1202_ClassMethods");

@@ -9,6 +9,7 @@ namespace StyleCopMagic.DocumentationRules
     using System.IO;
     using System.Linq;
     using Roslyn.Compilers.CSharp;
+    using System;
 
     public class SA1633 : RuleRewriter
     {
@@ -33,7 +34,7 @@ namespace StyleCopMagic.DocumentationRules
                 this.settings.Copyright.Replace("\n", "\n// "));
 
             // TODO: figure out how to do this properly.
-            comment = comment.Replace("\n", "\r\n");
+            comment = comment.Replace("\n", Environment.NewLine);
 
             SyntaxTriviaList commentTrivia = Syntax.ParseLeadingTrivia(comment);
             var preservedTrivia = node.GetLeadingTrivia().SkipWhile(x => 
