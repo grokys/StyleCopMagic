@@ -60,9 +60,9 @@ namespace StyleCopMagic.UnitTests.OrderingRules
         }
 
         [TestMethod]
-        public void SA1202_SA1202_ClassMembersInsideIf()
+        public void SA1201_SA1202_ClassMembersInsideIf()
         {
-            Run("SA1202_SA1202_ClassMembersInsideIf");
+            Run("SA1201_SA1202_ClassMembersInsideIf");
         }
     }
 }
